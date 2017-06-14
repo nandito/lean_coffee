@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "react": "^15.6.0",
+    "react-apollo": "^1.4.2",
     "react-dom": "^15.6.0",
     "semantic-ui-react": "^0.68.5"
   },
