@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "moment": "^2.18.1",
     "react": "^15.6.0",
     "react-apollo": "^1.4.2",
     "react-dom": "^15.6.0",
+    "semantic-ui-css": "^2.2.10",
     "semantic-ui-react": "^0.68.5"
   },
   "devDependencies": {

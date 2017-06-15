@@ -4,6 +4,7 @@ import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo'
 import './index.css'
+import 'semantic-ui-css/semantic.min.css'
 
 const networkInterface = createNetworkInterface({
   uri: 'https://api.graph.cool/simple/v1/cj3okomy5fb9l0198ja30bnhu'
