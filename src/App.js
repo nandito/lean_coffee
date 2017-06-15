@@ -1,28 +1,38 @@
 import React, { Component } from 'react'
+import { Route, Switch } from 'react-router-dom'
 import { Button, Checkbox, Form, Grid, Header } from 'semantic-ui-react'
 import AllLeanCoffees from './components/AllLeanCoffees'
 import AddParticipant from './components/participants/AddParticipant'
 import Participants from './components/participants/Participants'
+import Sidebar from './components/Sidebar'
 
 class App extends Component {
   render() {
     return (
-      <Grid columns={2} divided>
-        <Grid.Row streched>
-          <Grid.Column>
-            <Header as='h1'>Lean Coffee</Header>
-          </Grid.Column>
-        </Grid.Row>
-        <Grid.Row streched>
-          <Grid.Column width={4}>
-            <AllLeanCoffees />
-          </Grid.Column>
-          <Grid.Column width={8}>
-            <Participants />
-            <AddParticipant />
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+      <div>
+
+        <Grid columns={2} divided padded>
+
+          <Header as='h1'>Lean Coffee</Header>
+
+          <Grid.Row streched>
+
+            <Grid.Column width={3}>
+              <Sidebar />
+            </Grid.Column>
+
+            <Grid.Column width={13}>
+              <Switch>
+                <Route exact path="/" />
+                <Route exact path="/participants" component={Participants}/>
+                <Route exact path="/participants/add" component={AddParticipant}/>
+              </Switch>
+            </Grid.Column>
+
+          </Grid.Row>
+
+        </Grid>
+      </div>
     )
   }
 }
@@ -58,19 +68,6 @@ class App extends Component {
     }
   4. add a topic
 */
-
-const AddParticipants = () => (
-  <Form>
-    <Form.Field>
-      <label>Name</label>
-      <input placeholder='Name' />
-    </Form.Field>
-    <Form.Field>
-      <Form.Select label='State' options={options} placeholder='State' />
-    </Form.Field>
-    <Button type='submit'>Submit</Button>
-  </Form>
-)
 
 const options = [
   { key: 'cu', text: 'current', value: 'CURRENT' },
