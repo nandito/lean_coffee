@@ -10,8 +10,10 @@ const AllLeanCoffees = ({ data }) => {
     </Dimmer>
   )
 
-  if (data.error)
-    return console.log('ERROR:' , data.error)
+  if (data.error) {
+    console.error('Something went wrong:' , data.error)
+    return null
+  }
 
   return (
     <Segment>
