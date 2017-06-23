@@ -1,38 +1,23 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
-import { Button, Checkbox, Form, Grid, Header } from 'semantic-ui-react'
+import { Button, Container, Form } from 'semantic-ui-react'
 import AllLeanCoffees from './components/AllLeanCoffees'
 import AddParticipant from './components/participants/AddParticipant'
 import Participants from './components/participants/Participants'
-import Sidebar from './components/Sidebar'
+import TopMenu from './components/TopMenu'
 
 class App extends Component {
   render() {
     return (
-      <div>
+    <Container>
+      <TopMenu />
 
-        <Grid columns={2} divided padded>
-
-          <Header as='h1'>Lean Coffee</Header>
-
-          <Grid.Row streched>
-
-            <Grid.Column width={3}>
-              <Sidebar />
-            </Grid.Column>
-
-            <Grid.Column width={13}>
-              <Switch>
-                <Route exact path="/" />
-                <Route exact path="/participants" component={Participants}/>
-                <Route exact path="/participants/add" component={AddParticipant}/>
-              </Switch>
-            </Grid.Column>
-
-          </Grid.Row>
-
-        </Grid>
-      </div>
+      <Switch>
+        <Route exact path="/" />
+        <Route exact path="/participants" component={Participants}/>
+        <Route exact path="/participants/add" component={AddParticipant}/>
+      </Switch>
+    </Container>
     )
   }
 }

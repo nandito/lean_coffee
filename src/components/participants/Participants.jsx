@@ -16,7 +16,7 @@ const Participants = ({ data }) => {
 
   return (
     <Segment>
-      <List celled>
+      <List divided verticalAlign='middle'>
         { data.allParticipants.map(participant =>
           <List.Item key={participant.id}>
             <List.Content floated='right'>
