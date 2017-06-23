@@ -39,6 +39,15 @@ class TopMenu extends Component {
         >
           Add participant
         </Menu.Item>
+
+        <Menu.Item
+          name='/coffees'
+          active={activeItem === '/coffees'}
+          onClick={this.handleItemClick}
+        >
+          Lean Coffees
+        </Menu.Item>
+
       </Menu>
     )
   }

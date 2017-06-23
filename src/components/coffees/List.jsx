@@ -3,7 +3,7 @@ import { gql, graphql } from 'react-apollo'
 import moment from 'moment'
 import { Dimmer, Label, List, Loader, Segment } from 'semantic-ui-react'
 
-const AllLeanCoffees = ({ data }) => {
+const ListLeanCoffees = ({ data }) => {
   if (data.loading) return (
     <Dimmer inverted active>
       <Loader>Loading</Loader>
@@ -43,4 +43,4 @@ const MyQuery = gql`
   }
 `
 
-export default graphql(MyQuery)(AllLeanCoffees)
+export default graphql(MyQuery)(ListLeanCoffees)
