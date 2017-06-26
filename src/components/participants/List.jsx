@@ -1,8 +1,9 @@
 import React from 'react'
 import { gql, graphql } from 'react-apollo'
-import { Button, Dimmer, Label, List, Loader, Segment } from 'semantic-ui-react'
+import CreateParticipant from './Create'
+import { Button, Dimmer, Header, Icon, Label, List, Loader, Segment } from 'semantic-ui-react'
 
-const Participants = ({ data }) => {
+const ListParticipants = ({ data }) => {
   if (data.loading) return (
     <Dimmer inverted active>
       <Loader>Loading</Loader>
@@ -16,6 +17,13 @@ const Participants = ({ data }) => {
 
   return (
     <Segment>
+      <Header as='h2' icon textAlign='center'>
+        <Icon name='users' circular />
+        <Header.Content>
+          Participants
+        </Header.Content>
+      </Header>
+
       <List divided verticalAlign='middle'>
         { data.allParticipants.map(participant =>
           <List.Item key={participant.id}>
@@ -28,6 +36,9 @@ const Participants = ({ data }) => {
           </List.Item>
         ) }
       </List>
+
+      <CreateParticipant />
+
     </Segment>
   )
 }
@@ -41,4 +52,4 @@ const getParticipants = gql`
   }
 `
 
-export default graphql(getParticipants)(Participants)
+export default graphql(getParticipants)(ListParticipants)

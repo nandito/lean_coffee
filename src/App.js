@@ -3,8 +3,8 @@ import { Route, Switch } from 'react-router-dom'
 import { Button, Container, Form } from 'semantic-ui-react'
 import ListLeanCoffees from './components/coffees/List'
 import CreateLeanCoffee from './components/coffees/Create'
-import AddParticipant from './components/participants/AddParticipant'
-import Participants from './components/participants/Participants'
+import ListParticipants from './components/participants/List'
+import CreateParticipant from './components/participants/Create'
 import TopMenu from './components/TopMenu'
 
 class App extends Component {
@@ -15,8 +15,8 @@ class App extends Component {
 
       <Switch>
         <Route exact path="/" />
-        <Route exact path="/participants" component={Participants}/>
-        <Route exact path="/participants/add" component={AddParticipant}/>
+        <Route exact path="/participants" component={ListParticipants}/>
+        <Route exact path="/participants/add" component={CreateParticipant}/>
         <Route exact path="/coffees" component={ListLeanCoffees}/>
         <Route exact path="/coffees/add" component={CreateLeanCoffee}/>
       </Switch>
