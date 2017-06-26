@@ -58,6 +58,20 @@ const submitParticipant = gql`
 `
 export default graphql(submitParticipant, {
   props: ({ mutate }) => ({
-    submit: (name) => mutate({ variables: { name } }),
+    submit: (name) => mutate({
+      refetchQueries: [
+        {
+          query: gql`
+            query {
+              allParticipants {
+                id,
+                name,
+              }
+            }
+          `
+        }
+      ],
+      variables: { name }
+    }),
   }),
 })(CreateParticipant)
