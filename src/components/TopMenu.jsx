@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router'
-import { Input, Label, Menu } from 'semantic-ui-react'
+import { Menu } from 'semantic-ui-react'
 
 class TopMenu extends Component {
   state = { activeItem: 'participants' }
@@ -30,14 +30,6 @@ class TopMenu extends Component {
           onClick={this.handleItemClick}
         >
           Participants
-        </Menu.Item>
-
-        <Menu.Item
-          name='/participants/add'
-          active={activeItem === '/participants/add'}
-          onClick={this.handleItemClick}
-        >
-          Add participant
         </Menu.Item>
 
         <Menu.Item
