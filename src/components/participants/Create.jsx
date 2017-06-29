@@ -7,14 +7,26 @@ class CreateParticipant extends Component {
     super(props)
 
     this.state = {
-      name: ''
+      modalOpen: false,
+      name: '',
     }
   }
+
+  handleOpen = (e) => this.setState({
+    modalOpen: true,
+  })
+
+  handleClose = (e) => this.setState({
+    modalOpen: false,
+  })
 
   handleSubmit = (event) => {
     event.preventDefault()
     this.props.submit(this.state.name)
-    this.setState({ name: '' })
+    this.setState({
+      modalOpen: false,
+      name: '',
+    })
   }
 
   handleChange = (event) => {
@@ -23,7 +35,16 @@ class CreateParticipant extends Component {
 
   render() {
     return (
-      <Modal trigger={<Button><Icon name='add user' circular /> Add participant</Button>}>
+      <Modal
+        trigger={
+          <Button onClick={this.handleOpen}>
+            <Icon name='add user' circular /> Add participant
+          </Button>
+        }
+        closeIcon
+        open={this.state.modalOpen}
+        onClose={this.handleClose}
+      >
         <Modal.Header>
           <Icon name='add user' circular /> Add participant
         </Modal.Header>
