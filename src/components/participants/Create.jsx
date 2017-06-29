@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { Button, Form, Header, Icon, Modal, } from 'semantic-ui-react'
-import { gql, graphql } from 'react-apollo'
+import { graphql } from 'react-apollo'
+import { createParticipant, getParticipants } from '../../queries/participant'
 
 class CreateParticipant extends Component {
   constructor(props) {
@@ -69,29 +70,10 @@ CreateParticipant.propTypes = {
   submit: PropTypes.func.isRequired
 }
 
-const submitParticipant = gql`
-  mutation createParticipant($name: String!) {
-    createParticipant(name: $name) {
-      id,
-      name
-    }
-  }
-`
-export default graphql(submitParticipant, {
+export default graphql(createParticipant, {
   props: ({ mutate }) => ({
     submit: (name) => mutate({
-      refetchQueries: [
-        {
-          query: gql`
-            query {
-              allParticipants {
-                id,
-                name,
-              }
-            }
-          `
-        }
-      ],
+      refetchQueries: [{ query: getParticipants }],
       variables: { name }
     }),
   }),

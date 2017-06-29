@@ -1,7 +1,8 @@
 import React from 'react'
-import { compose, gql, graphql } from 'react-apollo'
+import { compose, graphql } from 'react-apollo'
 import CreateParticipant from './Create'
 import { Button, Dimmer, Header, Icon, Label, List, Loader, Segment } from 'semantic-ui-react'
+import { deleteParticipant, getParticipants } from '../../queries/participant'
 
 const ListParticipants = ({ data, handleDelete }) => {
 
@@ -43,24 +44,6 @@ const ListParticipants = ({ data, handleDelete }) => {
     </Segment>
   )
 }
-
-// TODO: move out query to file and share with CreateParticipant component
-const getParticipants = gql`
-  query {
-    allParticipants {
-      id,
-      name,
-    }
-  }
-`
-
-const deleteParticipant = gql`
-  mutation deleteParticipant($id: ID!) {
-    deleteParticipant(id: $id) {
-      id
-    }
-  }
-`
 
 export default compose(
   graphql(getParticipants),
