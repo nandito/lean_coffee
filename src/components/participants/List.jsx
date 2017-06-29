@@ -1,9 +1,10 @@
 import React from 'react'
-import { gql, graphql } from 'react-apollo'
+import { compose, gql, graphql } from 'react-apollo'
 import CreateParticipant from './Create'
 import { Button, Dimmer, Header, Icon, Label, List, Loader, Segment } from 'semantic-ui-react'
 
-const ListParticipants = ({ data }) => {
+const ListParticipants = ({ data, handleDelete }) => {
+
   if (data.loading) return (
     <Dimmer inverted active>
       <Loader>Loading</Loader>
@@ -28,7 +29,7 @@ const ListParticipants = ({ data }) => {
         { data.allParticipants.map(participant =>
           <List.Item key={participant.id}>
             <List.Content floated='right'>
-              <Button size='mini' color='red'>Delete</Button>
+              <Button size='mini' color='red' onClick={() => handleDelete(participant.id)}>Delete</Button>
             </List.Content>
             <List.Content>
               {participant.name}
@@ -43,6 +44,7 @@ const ListParticipants = ({ data }) => {
   )
 }
 
+// TODO: move out query to file and share with CreateParticipant component
 const getParticipants = gql`
   query {
     allParticipants {
@@ -52,4 +54,24 @@ const getParticipants = gql`
   }
 `
 
-export default graphql(getParticipants)(ListParticipants)
+const deleteParticipant = gql`
+  mutation deleteParticipant($id: ID!) {
+    deleteParticipant(id: $id) {
+      id
+    }
+  }
+`
+
+export default compose(
+  graphql(getParticipants),
+  graphql(deleteParticipant, {
+    props: ({ mutate }) => ({
+      handleDelete: (id) => mutate({
+        refetchQueries: [
+          { query: getParticipants }
+        ],
+        variables: { id }
+      })
+    })
+  })
+)(ListParticipants)
