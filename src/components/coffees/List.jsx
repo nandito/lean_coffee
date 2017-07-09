@@ -33,7 +33,7 @@ const ListLeanCoffees = ({ data }) => {
                 { moment(leanCoffee.createdAt).format('MMMM Do YYYY') }
               </Card.Header>
               <Card.Meta>
-                hosted by: {leanCoffee.host.name}
+                hosted by: {leanCoffee.host ? leanCoffee.host.name : 'N/A'}
               </Card.Meta>
               <Card.Description>
                 { leanCoffee.topics.length

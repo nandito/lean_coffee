@@ -1,21 +1,27 @@
 import React, { Component, PropTypes } from 'react'
 import { Button, Form, Select } from 'semantic-ui-react'
-import { gql, graphql } from 'react-apollo'
+import { compose, gql, graphql } from 'react-apollo'
+import { getParticipants } from '../../queries/participant'
 
 class CreateLeanCoffee extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      name: '',
       hostId: '',
+      state: '',
     }
   }
 
   handleSubmit = (event) => {
     event.preventDefault()
-    this.props.submit(this.state.name)
-    this.setState({ name: '' })
+    const { hostId, state } = this.state
+
+    this.props.submit({ hostId, state })
+    this.setState({
+      hostId: '',
+      state: '',
+    })
   }
 
   handleSelectChange = (key, value) => {
@@ -23,14 +29,25 @@ class CreateLeanCoffee extends Component {
   }
 
   render() {
+    const { data } = this.props
+    let hostOptions = []
+
+    if (!data.loading && data.allParticipants) {
+      hostOptions = hostDataToOptions(data.allParticipants)
+    }
+
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form
+        loading={data.loading}
+        onSubmit={this.handleSubmit}
+      >
         <Form.Field
           label='Host'
           control={Select}
           onChange={(e, { value }) => this.handleSelectChange('hostId', value)}
-          options={[{ key: 'af', value: 'af', text: 'Afghanistan' }]}
+          options={hostOptions}
           placeholder='Select host'
+          required
         />
 
         <Form.Field
@@ -39,6 +56,7 @@ class CreateLeanCoffee extends Component {
           onChange={(e, { value }) => this.handleSelectChange('state', value)}
           options={LEAN_COFFEE_STATES}
           placeholder='Select state'
+          required
         />
 
         <Button type='submit'>Submit</Button>
@@ -47,25 +65,42 @@ class CreateLeanCoffee extends Component {
   }
 }
 
+CreateLeanCoffee.propTypes = {
+  data: PropTypes.object.isRequired,
+}
+
+const hostDataToOptions = (allParticipants) => (
+  allParticipants.map(participant => (
+    { value: participant.id, text: participant.name }
+  ))
+)
+
 const LEAN_COFFEE_STATES = [
   { text: 'Topic collection', value: 'TOPIC_COLLECTION' },
   { text: 'Topic voting', value: 'TOPIC_VOTING' },
   { text: 'Discussion', value: 'DISCUSSION' },
 ]
 
-CreateLeanCoffee.propTypes = {
-  submit: PropTypes.func.isRequired
-}
-
 const submitLeanCoffee = gql`
-  mutation {
-    createLeanCoffee(hostId: "cj3ylixq5ifr30136mfzawkk3", state: TOPIC_COLLECTION) {
+  mutation createLeanCoffee($hostId: ID!, $state: LEAN_COFFEE_STATE!) {
+    createLeanCoffee(hostId: $hostId, state: $state) {
       id
     }
   }
 `
-export default graphql(submitLeanCoffee, {
-  // props: ({ mutate }) => ({
-  //   submit: (name) => mutate({ variables: { hostId } }),
-  // }),
-})(CreateLeanCoffee)
+
+export default compose(
+  graphql(getParticipants),
+  graphql(submitLeanCoffee, {
+    props: ({ mutate }) => ({
+      submit: ({ hostId, state }) => mutate(
+        {
+          variables: {
+            hostId,
+            state
+          }
+        }
+      ),
+    }),
+  })
+)(CreateLeanCoffee)
