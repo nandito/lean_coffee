@@ -1,7 +1,7 @@
 import React from 'react'
 import { gql, graphql } from 'react-apollo'
 import moment from 'moment'
-import { Dimmer, Label, List, Loader, Segment } from 'semantic-ui-react'
+import { Card, Dimmer, Header, Label, Icon, Loader } from 'semantic-ui-react'
 
 const ListLeanCoffees = ({ data }) => {
   if (data.loading) return (
@@ -16,19 +16,36 @@ const ListLeanCoffees = ({ data }) => {
   }
 
   return (
-    <Segment>
-      <List celled>
+    <div>
+      <Header as='h2' icon textAlign='center'>
+        <Icon name='coffee' circular />
+        <Header.Content>
+          Lean Coffees
+        </Header.Content>
+      </Header>
+
+      <Card.Group>
         { data.allLeanCoffees.map(leanCoffee =>
-          <List.Item key={leanCoffee.id}>
-            <List.Content>
+          <Card key={leanCoffee.id}>
+            <Card.Content>
               <Label as='a' size='mini' color='orange' ribbon='right'>{leanCoffee.state}</Label>
-              <List.Header>{moment(leanCoffee.createdAt).format('MMMM Do YYYY')}</List.Header>
-              {leanCoffee.topics.map(topic => <Label size='mini' key={topic.id}>{topic.name}</Label>)}
-            </List.Content>
-          </List.Item>
+              <Card.Header>
+                { moment(leanCoffee.createdAt).format('MMMM Do YYYY') }
+              </Card.Header>
+              <Card.Meta>
+                hosted by: {leanCoffee.host.name}
+              </Card.Meta>
+              <Card.Description>
+                { leanCoffee.topics.length
+                  ? leanCoffee.topics.map(topic => <Label size='mini' key={topic.id}>{topic.name}</Label>)
+                  : <span>There are no topics specified</span>
+                }
+              </Card.Description>
+            </Card.Content>
+          </Card>
         ) }
-      </List>
-    </Segment>
+      </Card.Group>
+    </div>
   )
 }
 
@@ -38,7 +55,8 @@ const MyQuery = gql`
       createdAt,
       id,
       state,
-      topics { id, name }
+      topics { id, name },
+      host { name }
     }
   }
 `
