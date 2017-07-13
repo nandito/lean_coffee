@@ -32,7 +32,7 @@ const ListLeanCoffees = ({ data }) => {
 
       <Card.Group itemsPerRow={3} stackable>
         { data.allLeanCoffees.map(leanCoffee =>
-          <Card key={leanCoffee.id}>
+          <Card key={leanCoffee.id} href={`coffees/${leanCoffee.id}`}>
             <Card.Content>
               <Label as='a' size='mini' color='orange' ribbon='right'>{leanCoffee.state}</Label>
               <Card.Header>

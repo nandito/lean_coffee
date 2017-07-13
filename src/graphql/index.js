@@ -5,6 +5,7 @@ export {
 } from './participant'
 
 export {
+  getLeanCoffee,
   getLeanCoffees,
   createLeanCoffee,
 } from './coffees'

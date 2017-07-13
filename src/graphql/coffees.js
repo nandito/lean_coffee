@@ -19,3 +19,23 @@ export const createLeanCoffee = gql`
     }
   }
 `
+
+export const getLeanCoffee = gql`
+  query LeanCoffee($id: ID!) {
+    LeanCoffee(id: $id) {
+      host {
+        name
+      },
+      createdAt
+      state
+      topics {
+        id
+        name
+        state
+        _votesMeta {
+          count
+        }
+      }
+    }
+  }
+`

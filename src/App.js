@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { Button, Container, Form } from 'semantic-ui-react'
+import LeanCoffeeDetails from './components/coffees/Details'
 import ListLeanCoffees from './components/coffees/List'
 import ListParticipants from './components/participants/List'
 import Home from './components/Home'
@@ -16,6 +17,7 @@ class App extends Component {
         <Route exact path="/" component={Home}/>
         <Route exact path="/participants" component={ListParticipants}/>
         <Route exact path="/coffees" component={ListLeanCoffees}/>
+        <Route exact path="/coffees/:id" component={LeanCoffeeDetails}/>
       </Switch>
     </Container>
     )
