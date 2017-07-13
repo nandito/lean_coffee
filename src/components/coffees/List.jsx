@@ -25,7 +25,7 @@ const ListLeanCoffees = ({ data }) => {
         </Header.Content>
       </Header>
 
-      <Card.Group>
+      <Card.Group itemsPerRow={3}>
         { data.allLeanCoffees.map(leanCoffee =>
           <Card key={leanCoffee.id}>
             <Card.Content>
