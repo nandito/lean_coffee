@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { Button, Container, Form } from 'semantic-ui-react'
 import ListLeanCoffees from './components/coffees/List'
-import CreateLeanCoffee from './components/coffees/Create'
 import ListParticipants from './components/participants/List'
 import Home from './components/Home'
 import TopMenu from './components/TopMenu'
@@ -17,7 +16,6 @@ class App extends Component {
         <Route exact path="/" component={Home}/>
         <Route exact path="/participants" component={ListParticipants}/>
         <Route exact path="/coffees" component={ListLeanCoffees}/>
-        <Route exact path="/coffees/add" component={CreateLeanCoffee}/>
       </Switch>
     </Container>
     )

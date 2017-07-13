@@ -1,7 +1,8 @@
 import React from 'react'
 import { graphql } from 'react-apollo'
 import moment from 'moment'
-import { Card, Dimmer, Header, Label, Icon, Loader } from 'semantic-ui-react'
+import { Card, Dimmer, Header, Label, Icon, Loader, Segment } from 'semantic-ui-react'
+import CreateLeanCoffee from './Create'
 import { getLeanCoffees } from '../../graphql'
 
 const ListLeanCoffees = ({ data }) => {
@@ -24,6 +25,10 @@ const ListLeanCoffees = ({ data }) => {
           Lean Coffees
         </Header.Content>
       </Header>
+
+      <Segment>
+        <CreateLeanCoffee />
+      </Segment>
 
       <Card.Group itemsPerRow={3}>
         { data.allLeanCoffees.map(leanCoffee =>

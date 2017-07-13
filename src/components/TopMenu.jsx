@@ -39,14 +39,6 @@ class TopMenu extends Component {
         >
           Lean Coffees
         </Menu.Item>
-
-        <Menu.Item
-          name='/coffees/add'
-          active={activeItem === '/coffees/add'}
-          onClick={this.handleItemClick}
-        >
-          Add Lean Coffee
-        </Menu.Item>
       </Menu>
     )
   }
