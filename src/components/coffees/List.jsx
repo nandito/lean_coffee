@@ -30,7 +30,7 @@ const ListLeanCoffees = ({ data }) => {
         <CreateLeanCoffee />
       </Segment>
 
-      <Card.Group itemsPerRow={3}>
+      <Card.Group itemsPerRow={3} stackable>
         { data.allLeanCoffees.map(leanCoffee =>
           <Card key={leanCoffee.id}>
             <Card.Content>

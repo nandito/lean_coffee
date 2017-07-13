@@ -18,7 +18,7 @@ const ListParticipants = ({ data, handleDelete }) => {
   }
 
   return (
-    <Segment>
+    <div>
       <Header as='h2' icon textAlign='center'>
         <Icon name='users' circular />
         <Header.Content>
@@ -26,22 +26,25 @@ const ListParticipants = ({ data, handleDelete }) => {
         </Header.Content>
       </Header>
 
-      <List divided verticalAlign='middle'>
-        { data.allParticipants.map(participant =>
-          <List.Item key={participant.id}>
-            <List.Content floated='right'>
-              <Button size='mini' color='red' onClick={() => handleDelete(participant.id)}>Delete</Button>
-            </List.Content>
-            <List.Content>
-              {participant.name}
-            </List.Content>
-          </List.Item>
-        ) }
-      </List>
+      <Segment>
+        <CreateParticipant />
+      </Segment>
 
-      <CreateParticipant />
-
-    </Segment>
+      <Segment>
+        <List divided verticalAlign='middle'>
+          { data.allParticipants.map(participant =>
+            <List.Item key={participant.id}>
+              <List.Content floated='right'>
+                <Button size='mini' color='red' onClick={() => handleDelete(participant.id)}>Delete</Button>
+              </List.Content>
+              <List.Content>
+                {participant.name}
+              </List.Content>
+            </List.Item>
+          ) }
+        </List>
+      </Segment>
+    </div>
   )
 }
 
