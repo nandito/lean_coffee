@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { Button, Form, Header, Icon, Modal, } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
-import { createParticipant, getParticipants } from '../../queries/participant'
+import { createParticipant, getParticipants } from '../../graphql'
 
 class CreateParticipant extends Component {
   constructor(props) {

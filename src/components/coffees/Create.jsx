@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { Button, Form, Select } from 'semantic-ui-react'
-import { compose, gql, graphql } from 'react-apollo'
-import { getParticipants } from '../../queries/participant'
+import { compose, graphql } from 'react-apollo'
+import { getParticipants, createLeanCoffee } from '../../graphql'
 
 class CreateLeanCoffee extends Component {
   constructor(props) {
@@ -81,17 +81,9 @@ const LEAN_COFFEE_STATES = [
   { text: 'Discussion', value: 'DISCUSSION' },
 ]
 
-const submitLeanCoffee = gql`
-  mutation createLeanCoffee($hostId: ID!, $state: LEAN_COFFEE_STATE!) {
-    createLeanCoffee(hostId: $hostId, state: $state) {
-      id
-    }
-  }
-`
-
 export default compose(
   graphql(getParticipants),
-  graphql(submitLeanCoffee, {
+  graphql(createLeanCoffee, {
     props: ({ mutate }) => ({
       submit: ({ hostId, state }) => mutate(
         {

@@ -1,7 +1,8 @@
 import React from 'react'
-import { gql, graphql } from 'react-apollo'
+import { graphql } from 'react-apollo'
 import moment from 'moment'
 import { Card, Dimmer, Header, Label, Icon, Loader } from 'semantic-ui-react'
+import { getLeanCoffees } from '../../graphql'
 
 const ListLeanCoffees = ({ data }) => {
   if (data.loading) return (
@@ -49,16 +50,4 @@ const ListLeanCoffees = ({ data }) => {
   )
 }
 
-const MyQuery = gql`
-  query {
-    allLeanCoffees {
-      createdAt,
-      id,
-      state,
-      topics { id, name },
-      host { name }
-    }
-  }
-`
-
-export default graphql(MyQuery)(ListLeanCoffees)
+export default graphql(getLeanCoffees)(ListLeanCoffees)

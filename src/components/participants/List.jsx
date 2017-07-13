@@ -2,7 +2,7 @@ import React from 'react'
 import { compose, graphql } from 'react-apollo'
 import CreateParticipant from './Create'
 import { Button, Dimmer, Header, Icon, List, Loader, Segment } from 'semantic-ui-react'
-import { deleteParticipant, getParticipants } from '../../queries/participant'
+import { deleteParticipant, getParticipants } from '../../graphql'
 
 const ListParticipants = ({ data, handleDelete }) => {
 
