@@ -31,9 +31,11 @@ const ListLeanCoffees = ({ data }) => {
       </Segment>
 
       <Card.Group itemsPerRow={3} stackable>
-        { data.allLeanCoffees.map(leanCoffee =>
-          <Card key={leanCoffee.id} href={`coffees/${leanCoffee.id}`}>
+        { data.allLeanCoffees.map((leanCoffee, index) =>
+          <Card key={leanCoffee.id} href={`coffees/${leanCoffee.id}`} raised={index === 0}>
             <Card.Content>
+              { index === 0 && <Label color='red' corner='left' icon='birthday' /> }
+
               <Label as='a' size='mini' color='orange' ribbon='right'>{leanCoffee.state}</Label>
               <Card.Header>
                 { moment(leanCoffee.createdAt).format('MMMM Do YYYY') }

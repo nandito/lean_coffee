@@ -2,7 +2,7 @@ import { gql } from 'react-apollo'
 
 export const getLeanCoffees = gql`
   query {
-    allLeanCoffees {
+    allLeanCoffees(orderBy: createdAt_DESC) {
       createdAt,
       id,
       state,
