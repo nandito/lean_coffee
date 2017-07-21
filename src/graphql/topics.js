@@ -24,3 +24,11 @@ export const createTopic = gql`
     }
   }
 `
+
+export const deleteTopic = gql`
+  mutation deleteTopic($id: ID!) {
+    deleteTopic(id: $id) {
+      id
+    }
+  }
+`

@@ -11,6 +11,7 @@ export {
 } from './coffees'
 
 export {
-  getTopics,
   createTopic,
+  deleteTopic,
+  getTopics,
 } from './topics'

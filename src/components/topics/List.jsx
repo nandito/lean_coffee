@@ -1,9 +1,10 @@
 import React from 'react'
-import { graphql } from 'react-apollo'
+import PropTypes from 'prop-types'
+import { compose, graphql } from 'react-apollo'
 import moment from 'moment'
 import { Button, Checkbox, Dimmer, Header, Icon, Loader, Table } from 'semantic-ui-react'
 import CreateTopic from './Create'
-import { getTopics } from '../../graphql'
+import { getTopics, deleteTopic } from '../../graphql'
 
 const ListTopics = ({ data, handleDelete }) => {
 
@@ -53,9 +54,10 @@ const ListTopics = ({ data, handleDelete }) => {
               </Table.Cell>
               <Table.Cell textAlign='right'>{topic._votesMeta.count}</Table.Cell>
               <Table.Cell textAlign='right'>
-                <Button size='small'>Select</Button>
-                <Button size='small'>Edit</Button>
-                <Button size='small' negative>Delete</Button>
+                <Button size='small' disabled>Edit</Button>
+                <Button size='small' negative onClick={() => handleDelete(topic.id)}>
+                  Delete
+                </Button>
               </Table.Cell>
             </Table.Row>
           ) }
@@ -74,4 +76,21 @@ const ListTopics = ({ data, handleDelete }) => {
   )
 }
 
-export default graphql(getTopics)(ListTopics)
+ListTopics.propTypes = {
+  data: PropTypes.object.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+}
+
+export default compose(
+  graphql(getTopics),
+  graphql(deleteTopic, {
+    props: ({ mutate }) => ({
+      handleDelete: (id) => mutate({
+        refetchQueries: [
+          { query: getTopics }
+        ],
+        variables: { id }
+      })
+    })
+  })
+)(ListTopics)
