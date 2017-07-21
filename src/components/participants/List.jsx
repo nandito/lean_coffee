@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { compose, graphql } from 'react-apollo'
 import CreateParticipant from './Create'
 import { Button, Dimmer, Header, Icon, List, Loader, Segment } from 'semantic-ui-react'
@@ -46,6 +47,11 @@ const ListParticipants = ({ data, handleDelete }) => {
       </Segment>
     </div>
   )
+}
+
+ListParticipants.propTypes = {
+  data: PropTypes.object.isRequired,
+  handleDelete: PropTypes.func.isRequired,
 }
 
 export default compose(

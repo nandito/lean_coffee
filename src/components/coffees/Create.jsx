@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Button, Form, Icon, Modal, Select } from 'semantic-ui-react'
 import { compose, graphql } from 'react-apollo'
 import { createLeanCoffee, getLeanCoffees, getParticipants } from '../../graphql'
@@ -97,6 +98,7 @@ class CreateLeanCoffee extends Component {
 
 CreateLeanCoffee.propTypes = {
   data: PropTypes.object.isRequired,
+  submit: PropTypes.func.isRequired,
 }
 
 const hostDataToOptions = (allParticipants) => (

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { graphql } from 'react-apollo'
 import moment from 'moment'
 import { Card, Dimmer, Header, Label, Icon, Loader, Segment } from 'semantic-ui-react'
@@ -55,6 +56,10 @@ const ListLeanCoffees = ({ data }) => {
       </Card.Group>
     </div>
   )
+}
+
+ListLeanCoffees.propTypes = {
+  data: PropTypes.object.isRequired,
 }
 
 export default graphql(getLeanCoffees)(ListLeanCoffees)

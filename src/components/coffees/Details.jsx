@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Button, Header, Label, List, Segment, Item } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
 import moment from 'moment'
@@ -72,6 +73,10 @@ class LeanCoffeeDetails extends Component {
       </div>
     )
   }
+}
+
+LeanCoffeeDetails.propTypes = {
+  data: PropTypes.object.isRequired,
 }
 
 const getTopicColor = (topicState) => {

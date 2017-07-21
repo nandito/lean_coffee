@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Button, Form, Header, Icon, Modal, } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
 import { createParticipant, getParticipants } from '../../graphql'
@@ -67,7 +68,7 @@ class CreateParticipant extends Component {
 }
 
 CreateParticipant.propTypes = {
-  submit: PropTypes.func.isRequired
+  submit: PropTypes.func.isRequired,
 }
 
 export default graphql(createParticipant, {
