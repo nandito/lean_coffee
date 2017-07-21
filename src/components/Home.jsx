@@ -1,38 +1,36 @@
 import React from 'react'
-import { Header, Icon, List, Segment } from 'semantic-ui-react'
+import { Header, Step } from 'semantic-ui-react'
+
+const steps = [
+  {
+    icon: 'add user',
+    title: 'Add participants',
+    description: 'To define who can participate'
+  },
+  {
+    icon: 'coffee',
+    title: 'Create coffee',
+    description: 'To start a new session'
+  },
+  {
+    icon: 'file text',
+    title: 'Collect topics',
+    description: 'To define the discussion topics'
+  },
+]
+
 
 const Home = () => (
-  <Segment>
+  <div>
     <Header as='h2' icon textAlign='center'>
       <Header.Content>
         Lean Coffee home
       </Header.Content>
     </Header>
 
-    <List divided verticalAlign='middle' size='large'>
-      <List.Item>
-        <List.Content>
-          <List.Header>
-            <Icon name='add user' circular /> Add participants
-          </List.Header>
-        </List.Content>
-      </List.Item>
-      <List.Item>
-        <List.Content>
-          <List.Header>
-            <Icon name='coffee' circular /> Add coffee
-          </List.Header>
-        </List.Content>
-      </List.Item>
-      <List.Item>
-        <List.Content>
-          <List.Header>
-            <Icon name='tags' circular /> Collect topics
-          </List.Header>
-        </List.Content>
-      </List.Item>
-    </List>
-  </Segment>
+    <Step.Group fluid items={steps} />
+
+  </div>
 )
 
 export default Home
