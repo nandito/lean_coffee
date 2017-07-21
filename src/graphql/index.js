@@ -9,3 +9,8 @@ export {
   getLeanCoffees,
   createLeanCoffee,
 } from './coffees'
+
+export {
+  getTopics,
+  createTopic,
+} from './topics'

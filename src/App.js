@@ -4,6 +4,7 @@ import { Button, Container, Form } from 'semantic-ui-react'
 import LeanCoffeeDetails from './components/coffees/Details'
 import ListLeanCoffees from './components/coffees/List'
 import ListParticipants from './components/participants/List'
+import ListTopics from './components/topics/List'
 import Home from './components/Home'
 import TopMenu from './components/TopMenu'
 
@@ -18,6 +19,7 @@ class App extends Component {
         <Route exact path="/participants" component={ListParticipants}/>
         <Route exact path="/coffees" component={ListLeanCoffees}/>
         <Route exact path="/coffees/:id" component={LeanCoffeeDetails}/>
+        <Route exact path="/topics" component={ListTopics}/>
       </Switch>
     </Container>
     )

@@ -3,6 +3,7 @@ import { Button, Form, Icon, Modal, Select } from 'semantic-ui-react'
 import { compose, graphql } from 'react-apollo'
 import { createLeanCoffee, getLeanCoffees, getParticipants } from '../../graphql'
 
+// TODO: split component: get the list of participants only when the modal is opened
 class CreateLeanCoffee extends Component {
   constructor(props) {
     super(props)
