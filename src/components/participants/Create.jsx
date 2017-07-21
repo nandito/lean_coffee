@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Form, Header, Icon, Modal, } from 'semantic-ui-react'
+import { Button, Form, Icon, Modal, } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
 import { createParticipant, getParticipants } from '../../graphql'
 

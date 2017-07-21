@@ -1,5 +1,5 @@
 import React from 'react'
-import { Header, Icon, Image, List, Segment } from 'semantic-ui-react'
+import { Header, Icon, List, Segment } from 'semantic-ui-react'
 
 const Home = () => (
   <Segment>

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { compose, graphql } from 'react-apollo'
 import moment from 'moment'
-import { Button, Checkbox, Dimmer, Header, Icon, Loader, Table } from 'semantic-ui-react'
+import { Button, Dimmer, Header, Icon, Loader, Table } from 'semantic-ui-react'
 import CreateTopic from './Create'
 import { getTopics, deleteTopic } from '../../graphql'
 

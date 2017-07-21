@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
-import { Button, Container, Form } from 'semantic-ui-react'
+import { Container } from 'semantic-ui-react'
 import LeanCoffeeDetails from './components/coffees/Details'
 import ListLeanCoffees from './components/coffees/List'
 import ListParticipants from './components/participants/List'
