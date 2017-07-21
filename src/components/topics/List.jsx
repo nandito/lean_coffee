@@ -2,6 +2,7 @@ import React from 'react'
 import { graphql } from 'react-apollo'
 import moment from 'moment'
 import { Button, Checkbox, Dimmer, Header, Icon, Loader, Table } from 'semantic-ui-react'
+import CreateTopic from './Create'
 import { getTopics } from '../../graphql'
 
 const ListTopics = ({ data, handleDelete }) => {
@@ -44,11 +45,16 @@ const ListTopics = ({ data, handleDelete }) => {
               <Table.Cell>{topic.name}</Table.Cell>
               <Table.Cell textAlign='center'>{topic.state}</Table.Cell>
               <Table.Cell textAlign='center'>{ moment(topic.updatedAt).format('MMMM Do YYYY') }</Table.Cell>
-              <Table.Cell textAlign='center'>{ moment(topic.leanCoffee.createdAt).format('MMMM Do YYYY') }</Table.Cell>
+              <Table.Cell textAlign='center'>
+                { topic.leanCoffee
+                  ? moment(topic.leanCoffee.createdAt).format('MMMM Do YYYY')
+                  : 'Not assigned'
+                }
+              </Table.Cell>
               <Table.Cell textAlign='right'>{topic._votesMeta.count}</Table.Cell>
               <Table.Cell textAlign='right'>
                 <Button size='small'>Select</Button>
-                <Button size='small'>Modify</Button>
+                <Button size='small'>Edit</Button>
                 <Button size='small' negative>Delete</Button>
               </Table.Cell>
             </Table.Row>
@@ -58,9 +64,7 @@ const ListTopics = ({ data, handleDelete }) => {
         <Table.Footer fullWidth>
           <Table.Row>
             <Table.HeaderCell colSpan='6'>
-              <Button floated='right' icon>
-                <Icon name='add' /> Add Topic
-              </Button>
+              <CreateTopic />
             </Table.HeaderCell>
           </Table.Row>
         </Table.Footer>

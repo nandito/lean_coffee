@@ -18,7 +18,7 @@ export const getTopics = gql`
 `
 
 export const createTopic = gql`
-  mutation createTopic($name: String!, $state: TOPIC_STATE!, $leanCoffeeId: ID!) {
+  mutation createTopic($name: String!, $state: TOPIC_STATE!, $leanCoffeeId: ID) {
     createTopic(name: $name, state: $state, leanCoffeeId: $leanCoffeeId){
       id
     }
