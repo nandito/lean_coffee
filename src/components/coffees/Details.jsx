@@ -94,12 +94,11 @@ class LeanCoffeeDetails extends Component {
 
                       { LeanCoffee.topics.length
                         ? LeanCoffee.topics.map(topic => (
-                          <List.Item>
+                          <List.Item key={topic.id}>
                             <Header size='small'>
                               {topic.name}
                             <Label
                               color={getTopicColor(topic.state)}
-                              key={topic.id}
                               pointing='left'
                               size='mini'
                               >
