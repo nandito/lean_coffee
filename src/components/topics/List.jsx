@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { compose, graphql } from 'react-apollo'
 import moment from 'moment'
 import { Button, Dimmer, Header, Icon, Loader, Table } from 'semantic-ui-react'
-import CreateTopic from './Create'
+import CreateTopicModal from './CreateModal'
 import { getTopics, deleteTopic } from '../../graphql'
 
 const ListTopics = ({ data, handleDelete }) => {
@@ -66,7 +66,7 @@ const ListTopics = ({ data, handleDelete }) => {
         <Table.Footer fullWidth>
           <Table.Row>
             <Table.HeaderCell colSpan='6'>
-              <CreateTopic />
+              <CreateTopicModal />
             </Table.HeaderCell>
           </Table.Row>
         </Table.Footer>
