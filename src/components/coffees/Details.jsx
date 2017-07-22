@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Header, Label, List, Segment, Item } from 'semantic-ui-react'
+import { Button, Header, Icon, Label, List, Segment, Item } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
 import moment from 'moment'
 import ChangeStateForm from './ChangeStateForm'
@@ -30,6 +30,8 @@ class LeanCoffeeDetails extends Component {
   render() {
     const { data: { LeanCoffee, loading } } = this.props
     const { changeStateOpen } = this.state
+    const coffeeStateName =LeanCoffee && LEAN_COFFEE_STATE_NAMES[LeanCoffee.state]
+    const coffeeStateColor = LeanCoffee && LEAN_COFFEE_STATE_COLORS[LeanCoffee.state]
 
     return (
       <div>
@@ -49,7 +51,15 @@ class LeanCoffeeDetails extends Component {
                 <Item.Content>
                   <Item.Meta>
                     <List horizontal divided>
-                      <List.Item>{ getCoffeeState(LeanCoffee.state) }</List.Item>
+                      <List.Item>
+                        <Label
+                          as='a'
+                          color={coffeeStateColor}
+                          onClick={this.handleChangeStateOpen}
+                        >
+                          <Icon name='edit'/> {coffeeStateName}
+                        </Label>
+                      </List.Item>
                       <List.Item>hosted by: {LeanCoffee.host ? LeanCoffee.host.name : 'N/A'}</List.Item>
                     </List>
                   </Item.Meta>
@@ -58,12 +68,11 @@ class LeanCoffeeDetails extends Component {
 
                     {
                       changeStateOpen
-                      ? <ChangeStateForm
+                      && <ChangeStateForm
                           hideForm={this.handleChangeStateClose}
                           id={LeanCoffee.id}
                           state={LeanCoffee.state}
                         />
-                      : <Button size='mini' onClick={this.handleChangeStateOpen}>Change state</Button>
                     }
 
                     <Header size='medium'>Topics</Header>
@@ -124,17 +133,16 @@ const getTopicColor = (topicState) => {
   }
 }
 
-const getCoffeeState = (coffeeState) => {
-  switch (coffeeState) {
-    case 'TOPIC_VOTING':
-      return <Label color='pink'>Topic voting</Label>
-    case 'TOPIC_COLLECTION':
-      return <Label color='purple'>Topic collection</Label>
-    case 'DISCUSSION':
-      return <Label color='violet'>Discussion</Label>
-    default:
-      return <span>N/A</span>
-  }
+const LEAN_COFFEE_STATE_COLORS = {
+  'TOPIC_VOTING': 'pink',
+  'TOPIC_COLLECTION': 'purple',
+  'DISCUSSION': 'violet',
+}
+
+const LEAN_COFFEE_STATE_NAMES = {
+  'TOPIC_VOTING': 'Topic voting',
+  'TOPIC_COLLECTION': 'Topic collection',
+  'DISCUSSION': 'Discussion',
 }
 
 export default graphql(getLeanCoffee, {
