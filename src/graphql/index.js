@@ -8,6 +8,7 @@ export {
   getLeanCoffee,
   getLeanCoffees,
   createLeanCoffee,
+  updateLeanCoffeeState,
 } from './coffees'
 
 export {

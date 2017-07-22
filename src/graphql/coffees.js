@@ -23,6 +23,7 @@ export const createLeanCoffee = gql`
 export const getLeanCoffee = gql`
   query LeanCoffee($id: ID!) {
     LeanCoffee(id: $id) {
+      id
       host {
         name
       },
@@ -36,6 +37,15 @@ export const getLeanCoffee = gql`
           count
         }
       }
+    }
+  }
+`
+
+export const updateLeanCoffeeState = gql`
+  mutation updateLeanCoffee($id: ID!, $state: LEAN_COFFEE_STATE!) {
+    updateLeanCoffee(id: $id, state: $state) {
+      id
+      state
     }
   }
 `

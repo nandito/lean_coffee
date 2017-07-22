@@ -3,11 +3,33 @@ import PropTypes from 'prop-types'
 import { Button, Header, Label, List, Segment, Item } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
 import moment from 'moment'
+import ChangeStateForm from './ChangeStateForm'
 import { getLeanCoffee } from '../../graphql'
 
 class LeanCoffeeDetails extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      changeStateOpen: false
+    }
+  }
+
+  handleChangeStateOpen = () => {
+    this.setState({
+      changeStateOpen: true
+    })
+  }
+
+  handleChangeStateClose = () => {
+    this.setState({
+      changeStateOpen: false
+    })
+  }
+
   render() {
     const { data: { LeanCoffee, loading } } = this.props
+    const { changeStateOpen } = this.state
 
     return (
       <div>
@@ -33,6 +55,17 @@ class LeanCoffeeDetails extends Component {
                   </Item.Meta>
 
                   <Item.Description>
+
+                    {
+                      changeStateOpen
+                      ? <ChangeStateForm
+                          hideForm={this.handleChangeStateClose}
+                          id={LeanCoffee.id}
+                          state={LeanCoffee.state}
+                        />
+                      : <Button size='mini' onClick={this.handleChangeStateOpen}>Change state</Button>
+                    }
+
                     <Header size='medium'>Topics</Header>
                     <List bulleted>
 
@@ -61,7 +94,6 @@ class LeanCoffeeDetails extends Component {
                   </Item.Description>
                   <Item.Extra>
                     <Button floated='right' negative>Delete</Button>
-                    <Button floated='right'>Change state</Button>
                     <Button floated='right'>Add topic</Button>
                   </Item.Extra>
                 </Item.Content>
