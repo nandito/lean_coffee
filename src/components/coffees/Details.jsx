@@ -4,6 +4,7 @@ import { Button, Header, Icon, Label, List, Segment, Item } from 'semantic-ui-re
 import { graphql } from 'react-apollo'
 import moment from 'moment'
 import ChangeStateForm from './ChangeStateForm'
+import CreateTopicForm from '../topics/CreateForm'
 import { getLeanCoffee } from '../../graphql'
 
 class LeanCoffeeDetails extends Component {
@@ -11,8 +12,21 @@ class LeanCoffeeDetails extends Component {
     super(props)
 
     this.state = {
-      changeStateOpen: false
+      addTopicOpen: false,
+      changeStateOpen: false,
     }
+  }
+
+  handleAddTopicOpen = () => {
+    this.setState({
+      addTopicOpen: true
+    })
+  }
+
+  handleAddTopicClose = () => {
+    this.setState({
+      addTopicOpen: false
+    })
   }
 
   handleChangeStateOpen = () => {
@@ -29,7 +43,7 @@ class LeanCoffeeDetails extends Component {
 
   render() {
     const { data: { LeanCoffee, loading } } = this.props
-    const { changeStateOpen } = this.state
+    const { addTopicOpen, changeStateOpen } = this.state
     const coffeeStateName =LeanCoffee && LEAN_COFFEE_STATE_NAMES[LeanCoffee.state]
     const coffeeStateColor = LeanCoffee && LEAN_COFFEE_STATE_COLORS[LeanCoffee.state]
 
@@ -100,10 +114,19 @@ class LeanCoffeeDetails extends Component {
                         : <List.Item>There are no topics specified</List.Item>
                       }
                     </List>
+
+                    {
+                      addTopicOpen
+                      ? <CreateTopicForm
+                          removeForm={this.handleAddTopicClose}
+                          leanCoffeeId={LeanCoffee.id}
+                        />
+                      : <Button size='mini' onClick={this.handleAddTopicOpen}><Icon name='add' /> Add topic</Button>
+                    }
+
                   </Item.Description>
                   <Item.Extra>
                     <Button floated='right' negative>Delete</Button>
-                    <Button floated='right'>Add topic</Button>
                   </Item.Extra>
                 </Item.Content>
               </Item>

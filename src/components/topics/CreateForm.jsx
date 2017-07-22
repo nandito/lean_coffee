@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { graphql } from 'react-apollo'
 import { Button, Form, Select, } from 'semantic-ui-react'
-import { createTopic, getTopics } from '../../graphql'
+import { createTopic, getLeanCoffee, getTopics } from '../../graphql'
 
 class CreateTopicForm extends Component {
   constructor(props) {
@@ -17,11 +17,11 @@ class CreateTopicForm extends Component {
   handleSubmit = (event) => {
     event.preventDefault()
     const { name, state } = this.state
-    const { afterSubmit, submit } = this.props
+    const { removeForm, leanCoffeeId, submit } = this.props
 
-    submit(name, state)
+    submit(leanCoffeeId, name, state)
 
-    afterSubmit && afterSubmit()
+    removeForm && removeForm()
   }
 
   handleInputChange = (event) => {
@@ -33,6 +33,8 @@ class CreateTopicForm extends Component {
   }
 
   render() {
+    const { removeForm } = this.props
+
     return (
       <Form onSubmit={this.handleSubmit}>
         <Form.Input
@@ -50,14 +52,16 @@ class CreateTopicForm extends Component {
           placeholder='Select state'
           required
         />
-        <Button type='submit'>Submit</Button>
+        <Button type='submit' positive>Submit</Button>
+        <Button onClick={removeForm}>Cancel</Button>
       </Form>
     )
   }
 }
 
 CreateTopicForm.propTypes = {
-  afterSubmit: PropTypes.func,
+  removeForm: PropTypes.func,
+  leanCoffeeId: PropTypes.string,
   submit: PropTypes.func.isRequired
 }
 
@@ -69,9 +73,24 @@ const TOPIC_STATES = [
 
 export default graphql(createTopic, {
   props: ({ mutate }) => ({
-    submit: (name, state) => mutate({
-      refetchQueries: [{ query: getTopics }],
-      variables: { name, state }
-    }),
+    submit: (leanCoffeeId, name, state) => {
+      if (leanCoffeeId) {
+        return mutate({
+          refetchQueries: [{
+            query: getLeanCoffee,
+            variables: { id: leanCoffeeId },
+          }],
+          variables: { leanCoffeeId, name, state }
+        })
+      }
+      else {
+        return mutate({
+          refetchQueries: [
+            { query: getTopics },
+          ],
+          variables: { name, state }
+        })
+      }
+    },
   }),
 })(CreateTopicForm)

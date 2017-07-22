@@ -38,7 +38,7 @@ class CreateTopicModal extends Component {
         <Modal.Content>
           <Modal.Description>
             <CreateTopicForm
-              afterSubmit={this.handleClose}
+              removeForm={this.handleClose}
             />
           </Modal.Description>
         </Modal.Content>
