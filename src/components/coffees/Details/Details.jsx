@@ -5,6 +5,7 @@ import { graphql } from 'react-apollo'
 import moment from 'moment'
 import ChangeStateForm from '../ChangeStateForm'
 import Collection from './TopicList/Collection'
+import Voting from './TopicList/Voting'
 import { getLeanCoffee } from '../../../graphql'
 
 class LeanCoffeeDetails extends Component {
@@ -80,6 +81,11 @@ class LeanCoffeeDetails extends Component {
 
                     <Collection
                       leanCoffeeId={LeanCoffee.id}
+                      loading={loading}
+                      topics={LeanCoffee.topics}
+                    />
+
+                    <Voting
                       loading={loading}
                       topics={LeanCoffee.topics}
                     />
