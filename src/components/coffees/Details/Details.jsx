@@ -3,30 +3,17 @@ import PropTypes from 'prop-types'
 import { Button, Header, Icon, Label, List, Segment, Item } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
 import moment from 'moment'
-import ChangeStateForm from './ChangeStateForm'
-import CreateTopicForm from '../topics/CreateForm'
-import { getLeanCoffee } from '../../graphql'
+import ChangeStateForm from '../ChangeStateForm'
+import Collection from './TopicList/Collection'
+import { getLeanCoffee } from '../../../graphql'
 
 class LeanCoffeeDetails extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      addTopicOpen: false,
       changeStateOpen: false,
     }
-  }
-
-  handleAddTopicOpen = () => {
-    this.setState({
-      addTopicOpen: true
-    })
-  }
-
-  handleAddTopicClose = () => {
-    this.setState({
-      addTopicOpen: false
-    })
   }
 
   handleChangeStateOpen = () => {
@@ -43,7 +30,7 @@ class LeanCoffeeDetails extends Component {
 
   render() {
     const { data: { LeanCoffee, loading } } = this.props
-    const { addTopicOpen, changeStateOpen } = this.state
+    const { changeStateOpen } = this.state
     const coffeeStateName =LeanCoffee && LEAN_COFFEE_STATE_NAMES[LeanCoffee.state]
     const coffeeStateColor = LeanCoffee && LEAN_COFFEE_STATE_COLORS[LeanCoffee.state]
 
@@ -90,38 +77,12 @@ class LeanCoffeeDetails extends Component {
                     }
 
                     <Header size='medium'>Topics</Header>
-                    <List bulleted>
 
-                      { LeanCoffee.topics.length
-                        ? LeanCoffee.topics.map(topic => (
-                          <List.Item key={topic.id}>
-                            <Header size='small'>
-                              {topic.name}
-                            <Label
-                              color={getTopicColor(topic.state)}
-                              pointing='left'
-                              size='mini'
-                              >
-                                {topic.state}
-                                <Label.Detail>
-                                  {topic._votesMeta && topic._votesMeta.count}
-                                </Label.Detail>
-                              </Label>
-                              </Header>
-                          </List.Item>
-                        ))
-                        : <List.Item>There are no topics specified</List.Item>
-                      }
-                    </List>
-
-                    {
-                      addTopicOpen
-                      ? <CreateTopicForm
-                          removeForm={this.handleAddTopicClose}
-                          leanCoffeeId={LeanCoffee.id}
-                        />
-                      : <Button size='mini' onClick={this.handleAddTopicOpen}><Icon name='add' /> Add topic</Button>
-                    }
+                    <Collection
+                      leanCoffeeId={LeanCoffee.id}
+                      loading={loading}
+                      topics={LeanCoffee.topics}
+                    />
 
                   </Item.Description>
                   <Item.Extra>
@@ -142,7 +103,7 @@ LeanCoffeeDetails.propTypes = {
   data: PropTypes.object.isRequired,
 }
 
-const getTopicColor = (topicState) => {
+export const getTopicColor = (topicState) => {
   switch (topicState) {
     case 'CURRENT':
       return 'green'

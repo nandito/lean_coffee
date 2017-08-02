@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { Container } from 'semantic-ui-react'
-import LeanCoffeeDetails from './components/coffees/Details'
+import LeanCoffeeDetails from './components/coffees/Details/Details'
 import ListLeanCoffees from './components/coffees/List'
 import ListParticipants from './components/participants/List'
 import ListTopics from './components/topics/List'
