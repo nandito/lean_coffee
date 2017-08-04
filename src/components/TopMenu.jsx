@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router'
 import { Menu } from 'semantic-ui-react'
+import AuthControl from './menu/AuthControl'
 
 class TopMenu extends Component {
   state = { activeItem: 'participants' }
@@ -39,6 +40,8 @@ class TopMenu extends Component {
         >
           Lean Coffees
         </Menu.Item>
+
+        <AuthControl />
       </Menu>
     )
   }
