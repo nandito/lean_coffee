@@ -12,7 +12,7 @@ export default class Auth {
   auth0 = new auth0.WebAuth({
     domain: 'lean-coffee.eu.auth0.com',
     clientID: 'tdJNe4V3XWxqNAQYhrK0FbrDzW3jbPcq',
-    redirectUri: 'http://localhost:3000',
+    redirectUri: 'http://localhost:3000/callback',
     audience: 'https://lean-coffee.eu.auth0.com/userinfo',
     responseType: 'token id_token',
     scope: 'openid'

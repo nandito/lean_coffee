@@ -41,7 +41,7 @@ class TopMenu extends Component {
           Lean Coffees
         </Menu.Item>
 
-        <AuthControl />
+        <AuthControl auth={this.props.auth} />
       </Menu>
     )
   }
