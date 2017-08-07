@@ -55,7 +55,7 @@ ListParticipants.propTypes = {
 }
 
 export default compose(
-  graphql(getParticipants),
+  graphql(getParticipants, { options: { fetchPolicy: 'network-only' } }),
   graphql(deleteParticipant, {
     props: ({ mutate }) => ({
       handleDelete: (id) => mutate({
