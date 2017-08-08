@@ -22,7 +22,7 @@ class App extends Component {
 
     return (
       <Container>
-        <TopMenu />
+        <TopMenu data={this.props.data} />
 
         <Switch>
           <Route exact path="/" component={Home}/>

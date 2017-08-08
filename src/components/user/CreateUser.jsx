@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter, Redirect } from 'react-router-dom'
 import { graphql, gql } from 'react-apollo'
-import { Button, Form, Icon, Modal, } from 'semantic-ui-react'
-import Loading from '../loading/Loading'
+import { Button, Form, } from 'semantic-ui-react'
 
 class CreateUser extends Component {
   constructor(props) {
@@ -45,9 +44,7 @@ class CreateUser extends Component {
     if (this.props.data.user || window.localStorage.getItem('auth0IdToken') === null) {
       console.warn('not a new user or already logged in')
       return (
-        <Redirect to={{
-          pathname: '/'
-        }}/>
+        <Redirect to={{ pathname: '/' }}/>
       )
     }
 
@@ -65,8 +62,8 @@ class CreateUser extends Component {
 }
 
 CreateUser.propTypes = {
-  createUser: React.PropTypes.func.isRequired,
-  data: React.PropTypes.object.isRequired,
+  createUser: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired,
 }
 
 const createUser = gql`
