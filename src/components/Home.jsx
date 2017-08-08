@@ -4,8 +4,8 @@ import { Header, Step } from 'semantic-ui-react'
 const steps = [
   {
     icon: 'add user',
-    title: 'Add participants',
-    description: 'To define who can participate'
+    title: 'Sign up',
+    description: 'To access all functions of the site'
   },
   {
     icon: 'coffee',
