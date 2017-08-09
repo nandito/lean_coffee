@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 import { Container } from 'semantic-ui-react'
 import LeanCoffeeDetails from './components/coffees/Details/Details'
 import ListLeanCoffees from './components/coffees/List'
@@ -20,13 +20,15 @@ class App extends Component {
       return <Loading />
     }
 
+    const isAuthenticated = (this.props.data.user)
+
     return (
       <Container>
         <TopMenu data={this.props.data} />
 
         <Switch>
           <Route exact path="/" component={Home}/>
-          <Route exact path="/participants" component={ListParticipants}/>
+          <PrivateRoute isAuthenticated={isAuthenticated} exact path="/participants" component={ListParticipants} />
           <Route exact path="/coffees" component={ListLeanCoffees}/>
           <Route exact path="/coffees/:id" component={LeanCoffeeDetails}/>
           <Route exact path="/topics" component={ListTopics}/>
@@ -36,6 +38,18 @@ class App extends Component {
     )
   }
 }
+
+const PrivateRoute = ({ component: Component, isAuthenticated, ...rest }) => (
+  <Route {...rest} render={props => (
+    (isAuthenticated)
+    ? <Component {...props}/>
+    : <Redirect to={{
+        pathname: '/',
+        state: { from: props.location },
+      }}/>
+    )
+  }/>
+)
 
 const userQuery = gql`
   query userQuery {
