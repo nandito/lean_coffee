@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Form, Icon, Modal, Select } from 'semantic-ui-react'
+import { Button, Form, Icon, Modal } from 'semantic-ui-react'
 import { compose, graphql } from 'react-apollo'
-import { createLeanCoffee, getLeanCoffees, getParticipants } from '../../graphql'
+import { createLeanCoffee, getLeanCoffees, getUser } from '../../graphql'
 
 // TODO: split component: get the list of participants only when the modal is opened
 class CreateLeanCoffee extends Component {
@@ -10,9 +10,7 @@ class CreateLeanCoffee extends Component {
     super(props)
 
     this.state = {
-      hostId: '',
       modalOpen: false,
-      state: '',
     }
   }
 
@@ -26,27 +24,18 @@ class CreateLeanCoffee extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault()
-    const { hostId, state } = this.state
+    const { submit, data: { user } } = this.props
 
-    this.props.submit({ hostId, state })
+    submit({ userId: user.id, state: 'TOPIC_COLLECTION' })
     this.setState({
-      hostId: '',
       modalOpen: false,
-      state: '',
     })
-  }
-
-  handleSelectChange = (key, value) => {
-    this.setState({ [key]: value })
   }
 
   render() {
     const { data } = this.props
-    let hostOptions = []
 
-    if (!data.loading && data.allParticipants) {
-      hostOptions = hostDataToOptions(data.allParticipants)
-    }
+    if (data.loading) return null
 
     return (
       <Modal
@@ -69,24 +58,14 @@ class CreateLeanCoffee extends Component {
               loading={data.loading}
               onSubmit={this.handleSubmit}
             >
-              <Form.Field
-                label='Host'
-                control={Select}
-                onChange={(e, { value }) => this.handleSelectChange('hostId', value)}
-                options={hostOptions}
-                placeholder='Select host'
-                required
-              />
-
-              <Form.Field
-                label='State'
-                control={Select}
-                onChange={(e, { value }) => this.handleSelectChange('state', value)}
-                options={LEAN_COFFEE_STATES}
-                placeholder='Select state'
-                required
-              />
-
+              <Form.Field>
+                <label>Name</label>
+                <input placeholder='Name' disabled value={data.user.name} />
+              </Form.Field>
+              <Form.Field>
+                <label>State</label>
+                <input placeholder='Name' disabled value='Topic collection' />
+              </Form.Field>
               <Button type='submit'>Submit</Button>
             </Form>
           </Modal.Description>
@@ -101,27 +80,15 @@ CreateLeanCoffee.propTypes = {
   submit: PropTypes.func.isRequired,
 }
 
-const hostDataToOptions = (allParticipants) => (
-  allParticipants.map(participant => (
-    { value: participant.id, text: participant.name }
-  ))
-)
-
-const LEAN_COFFEE_STATES = [
-  { text: 'Topic collection', value: 'TOPIC_COLLECTION' },
-  { text: 'Topic voting', value: 'TOPIC_VOTING' },
-  { text: 'Discussion', value: 'DISCUSSION' },
-]
-
 export default compose(
-  graphql(getParticipants),
+  graphql(getUser),
   graphql(createLeanCoffee, {
     props: ({ mutate }) => ({
-      submit: ({ hostId, state }) => mutate(
+      submit: ({ userId, state }) => mutate(
         {
           refetchQueries: [{ query: getLeanCoffees }],
           variables: {
-            hostId,
+            userId,
             state
           }
         }

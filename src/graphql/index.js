@@ -16,3 +16,7 @@ export {
   deleteTopic,
   getTopics,
 } from './topics'
+
+export {
+  getUser,
+} from './user'

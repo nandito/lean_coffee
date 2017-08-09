@@ -13,8 +13,8 @@ export const getLeanCoffees = gql`
 `
 
 export const createLeanCoffee = gql`
-  mutation createLeanCoffee($hostId: ID!, $state: LEAN_COFFEE_STATE!) {
-    createLeanCoffee(hostId: $hostId, state: $state) {
+  mutation createLeanCoffee($userId: ID!, $state: LeanCoffeeState!) {
+    createLeanCoffee(userId: $userId, state: $state) {
       id
     }
   }
@@ -41,6 +41,7 @@ export const getLeanCoffee = gql`
   }
 `
 
+// TODO: update the state type to LeanCoffeeState
 export const updateLeanCoffeeState = gql`
   mutation updateLeanCoffee($id: ID!, $state: LEAN_COFFEE_STATE!) {
     updateLeanCoffee(id: $id, state: $state) {
