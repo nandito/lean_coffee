@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router'
 import { Menu } from 'semantic-ui-react'
+import AuthControl from './menu/AuthControl'
 
 class TopMenu extends Component {
   state = { activeItem: 'participants' }
@@ -8,6 +9,10 @@ class TopMenu extends Component {
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name })
     this.props.history.push(name)
+  }
+
+  isLoggedIn = () => {
+    return this.props.data.user
   }
 
   render() {
@@ -24,21 +29,27 @@ class TopMenu extends Component {
           Home
         </Menu.Item>
 
-        <Menu.Item
-          name='/participants'
-          active={activeItem === '/participants'}
-          onClick={this.handleItemClick}
-        >
-          Participants
-        </Menu.Item>
+        { this.isLoggedIn() &&
+          <Menu.Item
+            name='/participants'
+            active={activeItem === '/participants'}
+            onClick={this.handleItemClick}
+          >
+            Participants
+          </Menu.Item>
+        }
 
-        <Menu.Item
-          name='/coffees'
-          active={activeItem === '/coffees'}
-          onClick={this.handleItemClick}
-        >
-          Lean Coffees
-        </Menu.Item>
+        { this.isLoggedIn() &&
+          <Menu.Item
+            name='/coffees'
+            active={activeItem === '/coffees'}
+            onClick={this.handleItemClick}
+          >
+            Lean Coffees
+          </Menu.Item>
+        }
+
+        <AuthControl data={this.props.data} />
       </Menu>
     )
   }
