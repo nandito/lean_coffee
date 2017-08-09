@@ -28,11 +28,12 @@ class App extends Component {
 
         <Switch>
           <Route exact path="/" component={Home}/>
-          <PrivateRoute isAuthenticated={isAuthenticated} exact path="/participants" component={ListParticipants} />
-          <Route exact path="/coffees" component={ListLeanCoffees}/>
-          <Route exact path="/coffees/:id" component={LeanCoffeeDetails}/>
-          <Route exact path="/topics" component={ListTopics}/>
           <Route exact path="/signup" component={CreateUser}/>
+
+          <PrivateRoute isAuthenticated={isAuthenticated} exact path="/participants" component={ListParticipants} />
+          <PrivateRoute isAuthenticated={isAuthenticated} exact path="/coffees" component={ListLeanCoffees}/>
+          <PrivateRoute isAuthenticated={isAuthenticated} exact path="/coffees/:id" component={LeanCoffeeDetails}/>
+          <PrivateRoute isAuthenticated={isAuthenticated} exact path="/topics" component={ListTopics}/>
         </Switch>
       </Container>
     )
