@@ -25,6 +25,7 @@ export const getLeanCoffee = gql`
     LeanCoffee(id: $id) {
       id
       user {
+        id
         name
       },
       createdAt
@@ -41,9 +42,8 @@ export const getLeanCoffee = gql`
   }
 `
 
-// TODO: update the state type to LeanCoffeeState
 export const updateLeanCoffeeState = gql`
-  mutation updateLeanCoffee($id: ID!, $state: LEAN_COFFEE_STATE!) {
+  mutation updateLeanCoffee($id: ID!, $state: LeanCoffeeState!) {
     updateLeanCoffee(id: $id, state: $state) {
       id
       state

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { Button, Header, Icon, Label, List, Segment, Item } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
 import moment from 'moment'
@@ -29,7 +30,7 @@ class LeanCoffeeDetails extends Component {
   }
 
   render() {
-    const { data: { LeanCoffee, loading } } = this.props
+    const { data: { LeanCoffee, loading }, user } = this.props
     const { changeStateOpen } = this.state
     const coffeeStateName =LeanCoffee && LEAN_COFFEE_STATE_NAMES[LeanCoffee.state]
     const coffeeStateColor = LeanCoffee && LEAN_COFFEE_STATE_COLORS[LeanCoffee.state]
@@ -53,13 +54,19 @@ class LeanCoffeeDetails extends Component {
                   <Item.Meta>
                     <List horizontal divided>
                       <List.Item>
-                        <Label
-                          as='a'
-                          color={coffeeStateColor}
-                          onClick={this.handleChangeStateOpen}
-                        >
-                          <Icon name='edit'/> {coffeeStateName}
-                        </Label>
+                        { user.id === LeanCoffee.user.id
+                          ? <Label
+                              as='a'
+                              color={coffeeStateColor}
+                              onClick={this.handleChangeStateOpen}
+                            >
+                              <Icon name='edit'/> {coffeeStateName}
+                            </Label>
+                          : <Label color={coffeeStateColor}>
+                              {coffeeStateName}
+                            </Label>
+                        }
+
                       </List.Item>
                       <List.Item>hosted by: {LeanCoffee.user ? LeanCoffee.user.name : 'N/A'}</List.Item>
                     </List>
@@ -68,7 +75,7 @@ class LeanCoffeeDetails extends Component {
                   <Item.Description>
 
                     {
-                      changeStateOpen
+                      user.id === LeanCoffee.user.id && changeStateOpen
                       && <ChangeStateForm
                           hideForm={this.handleChangeStateClose}
                           id={LeanCoffee.id}
@@ -129,6 +136,12 @@ const LEAN_COFFEE_STATE_NAMES = {
   'DISCUSSION': 'Discussion',
 }
 
-export default graphql(getLeanCoffee, {
+const LeanCoffeeDetailsWithData = graphql(getLeanCoffee, {
   options: ({ match: { params: { id } } }) => ({ variables: { id } })
 })(LeanCoffeeDetails)
+
+const mapStateToProps = (state) => ({
+  user: state.user
+})
+
+export default connect(mapStateToProps)(LeanCoffeeDetailsWithData)

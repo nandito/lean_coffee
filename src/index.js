@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 // import registerServiceWorker from './registerServiceWorker'
+import { createStore, combineReducers } from 'redux'
+import userReducer from './components/user/reducer'
 import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo'
 import './index.css'
 import 'semantic-ui-css/semantic.min.css'
@@ -29,9 +31,17 @@ const client = new ApolloClient({
   networkInterface
 })
 
+const store = createStore(
+  combineReducers({
+    user: userReducer,
+    apollo: client.reducer(),
+  }),
+  {}
+)
+
 ReactDOM.render(
   <BrowserRouter>
-    <ApolloProvider client={client}>
+    <ApolloProvider client={client} store={store}>
       <App />
     </ApolloProvider>
   </BrowserRouter>,
