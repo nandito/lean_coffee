@@ -11,6 +11,7 @@ import Loading from './components/loading/Loading'
 import TopMenu from './components/TopMenu'
 import CreateUser from './components/user/CreateUser'
 import { getUser } from './graphql'
+
 export const clientId = 'tdJNe4V3XWxqNAQYhrK0FbrDzW3jbPcq'
 export const domain='lean-coffee.eu.auth0.com'
 
