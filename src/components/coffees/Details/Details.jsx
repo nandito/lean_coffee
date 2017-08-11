@@ -30,7 +30,7 @@ class LeanCoffeeDetails extends Component {
   }
 
   render() {
-    const { data: { LeanCoffee, loading } } = this.props
+    const { data: { LeanCoffee, loading }, user } = this.props
     const { changeStateOpen } = this.state
     const coffeeStateName =LeanCoffee && LEAN_COFFEE_STATE_NAMES[LeanCoffee.state]
     const coffeeStateColor = LeanCoffee && LEAN_COFFEE_STATE_COLORS[LeanCoffee.state]
@@ -54,13 +54,19 @@ class LeanCoffeeDetails extends Component {
                   <Item.Meta>
                     <List horizontal divided>
                       <List.Item>
-                        <Label
-                          as='a'
-                          color={coffeeStateColor}
-                          onClick={this.handleChangeStateOpen}
-                        >
-                          <Icon name='edit'/> {coffeeStateName}
-                        </Label>
+                        { user.id === LeanCoffee.user.id
+                          ? <Label
+                              as='a'
+                              color={coffeeStateColor}
+                              onClick={this.handleChangeStateOpen}
+                            >
+                              <Icon name='edit'/> {coffeeStateName}
+                            </Label>
+                          : <Label color={coffeeStateColor}>
+                              {coffeeStateName}
+                            </Label>
+                        }
+
                       </List.Item>
                       <List.Item>hosted by: {LeanCoffee.user ? LeanCoffee.user.name : 'N/A'}</List.Item>
                     </List>
@@ -69,7 +75,7 @@ class LeanCoffeeDetails extends Component {
                   <Item.Description>
 
                     {
-                      changeStateOpen
+                      user.id === LeanCoffee.user.id && changeStateOpen
                       && <ChangeStateForm
                           hideForm={this.handleChangeStateClose}
                           id={LeanCoffee.id}
