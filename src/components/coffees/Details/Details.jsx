@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { Button, Header, Icon, Label, List, Segment, Item } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
 import moment from 'moment'
@@ -129,6 +130,12 @@ const LEAN_COFFEE_STATE_NAMES = {
   'DISCUSSION': 'Discussion',
 }
 
-export default graphql(getLeanCoffee, {
+const LeanCoffeeDetailsWithData = graphql(getLeanCoffee, {
   options: ({ match: { params: { id } } }) => ({ variables: { id } })
 })(LeanCoffeeDetails)
+
+const mapStateToProps = (state) => ({
+  user: state.user
+})
+
+export default connect(mapStateToProps)(LeanCoffeeDetailsWithData)
