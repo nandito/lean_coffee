@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { Container } from 'semantic-ui-react'
+import { graphql } from 'react-apollo'
 import LeanCoffeeDetails from './components/coffees/Details/Details'
 import ListLeanCoffees from './components/coffees/List'
 import ListParticipants from './components/participants/List'
@@ -9,9 +10,7 @@ import Home from './components/Home'
 import Loading from './components/loading/Loading'
 import TopMenu from './components/TopMenu'
 import CreateUser from './components/user/CreateUser'
-import { graphql} from 'react-apollo'
 import { getUser } from './graphql'
-
 export const clientId = 'tdJNe4V3XWxqNAQYhrK0FbrDzW3jbPcq'
 export const domain='lean-coffee.eu.auth0.com'
 
