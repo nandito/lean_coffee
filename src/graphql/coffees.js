@@ -7,7 +7,7 @@ export const getLeanCoffees = gql`
       id,
       state,
       topics { id, name },
-      host { name }
+      user { name }
     }
   }
 `
@@ -24,7 +24,7 @@ export const getLeanCoffee = gql`
   query LeanCoffee($id: ID!) {
     LeanCoffee(id: $id) {
       id
-      host {
+      user {
         name
       },
       createdAt
