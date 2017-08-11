@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Form, Icon, Modal } from 'semantic-ui-react'
+import { Button, Icon, Modal } from 'semantic-ui-react'
 import { compose, graphql } from 'react-apollo'
 import { createLeanCoffee, getLeanCoffees, getUser } from '../../graphql'
 
@@ -22,11 +22,10 @@ class CreateLeanCoffee extends Component {
     modalOpen: false,
   })
 
-  handleSubmit = (event) => {
-    event.preventDefault()
+  handleSubmit = () => {
     const { submit, data: { user } } = this.props
 
-    submit({ userId: user.id, state: 'TOPIC_COLLECTION' })
+    submit({ userId: user.id })
     this.setState({
       modalOpen: false,
     })
@@ -40,8 +39,8 @@ class CreateLeanCoffee extends Component {
     return (
       <Modal
         trigger={
-          <Button onClick={this.handleOpen}>
-            <Icon name='coffee' circular /> Add Lean Coffee
+          <Button onClick={this.handleOpen} primary >
+            <Icon name='plus' /> Start new session
           </Button>
         }
         closeIcon
@@ -54,22 +53,18 @@ class CreateLeanCoffee extends Component {
 
         <Modal.Content>
           <Modal.Description>
-            <Form
-              loading={data.loading}
-              onSubmit={this.handleSubmit}
-            >
-              <Form.Field>
-                <label>Name</label>
-                <input placeholder='Name' disabled value={data.user.name} />
-              </Form.Field>
-              <Form.Field>
-                <label>State</label>
-                <input placeholder='Name' disabled value='Topic collection' />
-              </Form.Field>
-              <Button type='submit'>Submit</Button>
-            </Form>
+            <p>Do you want to start a new Lean Coffee session?</p>
           </Modal.Description>
         </Modal.Content>
+
+        <Modal.Actions>
+          <Button color='red' onClick={this.handleClose}>
+            <Icon name='remove' /> No
+          </Button>
+          <Button color='green' onClick={this.handleSubmit}>
+            <Icon name='checkmark' /> Yes
+          </Button>
+        </Modal.Actions>
       </Modal>
     )
   }
@@ -84,12 +79,12 @@ export default compose(
   graphql(getUser),
   graphql(createLeanCoffee, {
     props: ({ mutate }) => ({
-      submit: ({ userId, state }) => mutate(
+      submit: ({ userId }) => mutate(
         {
           refetchQueries: [{ query: getLeanCoffees }],
           variables: {
             userId,
-            state
+            state: 'TOPIC_COLLECTION'
           }
         }
       ),

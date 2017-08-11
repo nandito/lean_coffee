@@ -9,7 +9,8 @@ import Home from './components/Home'
 import Loading from './components/loading/Loading'
 import TopMenu from './components/TopMenu'
 import CreateUser from './components/user/CreateUser'
-import { graphql, gql } from 'react-apollo'
+import { graphql} from 'react-apollo'
+import { getUser } from './graphql'
 
 export const clientId = 'tdJNe4V3XWxqNAQYhrK0FbrDzW3jbPcq'
 export const domain='lean-coffee.eu.auth0.com'
@@ -52,12 +53,4 @@ const PrivateRoute = ({ component: Component, isAuthenticated, ...rest }) => (
   }/>
 )
 
-const userQuery = gql`
-  query userQuery {
-    user {
-      id
-    }
-  }
-`
-
-export default graphql(userQuery, { options: {fetchPolicy: 'network-only' }})(App)
+export default graphql(getUser, { options: {fetchPolicy: 'network-only' }})(App)

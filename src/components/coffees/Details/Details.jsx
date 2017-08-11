@@ -61,7 +61,7 @@ class LeanCoffeeDetails extends Component {
                           <Icon name='edit'/> {coffeeStateName}
                         </Label>
                       </List.Item>
-                      <List.Item>hosted by: {LeanCoffee.host ? LeanCoffee.host.name : 'N/A'}</List.Item>
+                      <List.Item>hosted by: {LeanCoffee.user ? LeanCoffee.user.name : 'N/A'}</List.Item>
                     </List>
                   </Item.Meta>
 
