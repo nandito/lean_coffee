@@ -101,9 +101,12 @@ class LeanCoffeeDetails extends Component {
                     />
 
                   </Item.Description>
-                  <Item.Extra>
-                    <Button floated='right' negative onClick={this.handleDelete}>Delete</Button>
-                  </Item.Extra>
+                  {
+                    user.id === LeanCoffee.user.id
+                    && <Item.Extra>
+                         <Button floated='right' negative onClick={this.handleDelete}>Delete</Button>
+                       </Item.Extra>
+                  }
                 </Item.Content>
               </Item>
             }
