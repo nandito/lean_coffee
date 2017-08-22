@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Button, Header, Icon, Label, List, Segment, Item } from 'semantic-ui-react'
-import { graphql } from 'react-apollo'
+import { compose, graphql } from 'react-apollo'
 import moment from 'moment'
 import ChangeStateForm from '../ChangeStateForm'
 import TopicList from './TopicList/TopicList'
-import { getLeanCoffee } from '../../../graphql'
+import { deleteLeanCoffee, getLeanCoffee, getLeanCoffees } from '../../../graphql'
 
 class LeanCoffeeDetails extends Component {
   constructor(props) {
@@ -29,10 +29,18 @@ class LeanCoffeeDetails extends Component {
     })
   }
 
+  handleDelete = () => {
+    const { data: { LeanCoffee }, deleteLeanCoffee, history } = this.props
+
+    deleteLeanCoffee(LeanCoffee.id).then(() => {
+      history.push('/coffees')
+    })
+  }
+
   render() {
     const { data: { LeanCoffee, loading }, user } = this.props
     const { changeStateOpen } = this.state
-    const coffeeStateName =LeanCoffee && LEAN_COFFEE_STATE_NAMES[LeanCoffee.state]
+    const coffeeStateName = LeanCoffee && LEAN_COFFEE_STATE_NAMES[LeanCoffee.state]
     const coffeeStateColor = LeanCoffee && LEAN_COFFEE_STATE_COLORS[LeanCoffee.state]
 
     return (
@@ -94,7 +102,7 @@ class LeanCoffeeDetails extends Component {
 
                   </Item.Description>
                   <Item.Extra>
-                    <Button floated='right' negative>Delete</Button>
+                    <Button floated='right' negative onClick={this.handleDelete}>Delete</Button>
                   </Item.Extra>
                 </Item.Content>
               </Item>
@@ -109,6 +117,7 @@ class LeanCoffeeDetails extends Component {
 
 LeanCoffeeDetails.propTypes = {
   data: PropTypes.object.isRequired,
+  deleteLeanCoffee: PropTypes.func.isRequired,
 }
 
 export const getTopicColor = (topicState) => {
@@ -136,9 +145,21 @@ const LEAN_COFFEE_STATE_NAMES = {
   'DISCUSSION': 'Discussion',
 }
 
-const LeanCoffeeDetailsWithData = graphql(getLeanCoffee, {
-  options: ({ match: { params: { id } } }) => ({ variables: { id } })
-})(LeanCoffeeDetails)
+const LeanCoffeeDetailsWithData = compose(
+  graphql(getLeanCoffee, {
+    options: ({ match: { params: { id } } }) => ({ variables: { id } })
+  }),
+  graphql(deleteLeanCoffee, {
+    props: ({ mutate }) => ({
+      deleteLeanCoffee: (id) => mutate({
+        refetchQueries: [
+          { query: getLeanCoffees }
+        ],
+        variables: { id }
+      })
+    })
+  })
+)(LeanCoffeeDetails)
 
 const mapStateToProps = (state) => ({
   user: state.user
