@@ -50,3 +50,11 @@ export const updateLeanCoffeeState = gql`
     }
   }
 `
+
+export const deleteLeanCoffee = gql`
+  mutation deleteLeanCoffee($id: ID!) {
+    deleteLeanCoffee(id: $id) {
+      id
+    }
+  }
+`
