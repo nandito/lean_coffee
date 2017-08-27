@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 // import registerServiceWorker from './registerServiceWorker'
-import { createStore, combineReducers } from 'redux'
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import userReducer from './components/user/reducer'
 import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo'
 import './index.css'
@@ -36,7 +36,11 @@ const store = createStore(
     user: userReducer,
     apollo: client.reducer(),
   }),
-  {}
+  {},
+  compose(
+    applyMiddleware(client.middleware()),
+    (typeof window.__REDUX_DEVTOOLS_EXTENSION__ !== 'undefined') ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f,
+  )
 )
 
 ReactDOM.render(
