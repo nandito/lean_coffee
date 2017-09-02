@@ -7,7 +7,11 @@ export const getLeanCoffees = gql`
       id,
       state,
       topics { id, name },
-      user { name }
+      user { id, name }
+    }
+    user {
+      id
+      name
     }
   }
 `
@@ -38,6 +42,10 @@ export const getLeanCoffee = gql`
           count
         }
       }
+    }
+    user {
+      id
+      name
     }
   }
 `

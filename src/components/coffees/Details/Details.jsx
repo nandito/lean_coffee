@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { Button, Header, Icon, Label, List, Segment, Item } from 'semantic-ui-react'
 import { compose, graphql } from 'react-apollo'
 import moment from 'moment'
@@ -38,7 +37,7 @@ class LeanCoffeeDetails extends Component {
   }
 
   render() {
-    const { data: { LeanCoffee, loading }, user } = this.props
+    const { data: { LeanCoffee, loading, user } } = this.props
     const { changeStateOpen } = this.state
     const coffeeStateName = LeanCoffee && LEAN_COFFEE_STATE_NAMES[LeanCoffee.state]
     const coffeeStateColor = LeanCoffee && LEAN_COFFEE_STATE_COLORS[LeanCoffee.state]
@@ -148,9 +147,12 @@ const LEAN_COFFEE_STATE_NAMES = {
   'DISCUSSION': 'Discussion',
 }
 
-const LeanCoffeeDetailsWithData = compose(
+export default compose(
   graphql(getLeanCoffee, {
-    options: ({ match: { params: { id } } }) => ({ variables: { id } })
+    options: ({ match: { params: { id } } }) => ({
+      fetchPolicy: 'network-only',
+      variables: { id },
+    })
   }),
   graphql(deleteLeanCoffee, {
     props: ({ mutate }) => ({
@@ -163,9 +165,3 @@ const LeanCoffeeDetailsWithData = compose(
     })
   })
 )(LeanCoffeeDetails)
-
-const mapStateToProps = (state) => ({
-  user: state.user
-})
-
-export default connect(mapStateToProps)(LeanCoffeeDetailsWithData)
