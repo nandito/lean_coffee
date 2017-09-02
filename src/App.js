@@ -53,4 +53,4 @@ const PrivateRoute = ({ component: Component, isAuthenticated, ...rest }) => (
   }/>
 )
 
-export default graphql(getUser, { options: {fetchPolicy: 'network-only' }})(App)
+export default graphql(getUser, { options: { fetchPolicy: 'network-only' }})(App)

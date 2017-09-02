@@ -62,4 +62,4 @@ ListLeanCoffees.propTypes = {
   data: PropTypes.object.isRequired,
 }
 
-export default graphql(getLeanCoffees)(ListLeanCoffees)
+export default graphql(getLeanCoffees, { options: {fetchPolicy: 'network-only'}})(ListLeanCoffees)

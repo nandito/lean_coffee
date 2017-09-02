@@ -4,7 +4,6 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 // import registerServiceWorker from './registerServiceWorker'
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
-import userReducer from './components/user/reducer'
 import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo'
 import './index.css'
 import 'semantic-ui-css/semantic.min.css'
@@ -33,7 +32,6 @@ const client = new ApolloClient({
 
 const store = createStore(
   combineReducers({
-    user: userReducer,
     apollo: client.reducer(),
   }),
   {},

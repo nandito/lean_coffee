@@ -8,3 +8,11 @@ export const getUser = gql`
     }
   }
 `
+
+export const createUser = gql`
+  mutation ($idToken: String!, $name: String!){
+    createUser(authProvider: {auth0: {idToken: $idToken}}, name: $name) {
+      id
+    }
+  }
+`
