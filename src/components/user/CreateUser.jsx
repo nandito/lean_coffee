@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter, Redirect } from 'react-router-dom'
-import { graphql, gql } from 'react-apollo'
+import { graphql } from 'react-apollo'
 import { Button, Form, } from 'semantic-ui-react'
+import { createUser, getUser } from '../../graphql'
 
 class CreateUser extends Component {
   constructor(props) {
@@ -66,22 +67,6 @@ CreateUser.propTypes = {
   data: PropTypes.object.isRequired,
 }
 
-const createUser = gql`
-  mutation ($idToken: String!, $name: String!){
-    createUser(authProvider: {auth0: {idToken: $idToken}}, name: $name) {
-      id
-    }
-  }
-`
-
-const userQuery = gql`
-  query {
-    user {
-      id
-    }
-  }
-`
-
 export default graphql(createUser, {name: 'createUser'})(
-  graphql(userQuery, { options: {fetchPolicy: 'network-only'}})(withRouter(CreateUser))
+  graphql(getUser, { options: {fetchPolicy: 'network-only'}})(withRouter(CreateUser))
 )

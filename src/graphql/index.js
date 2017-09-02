@@ -19,5 +19,6 @@ export {
 } from './topics'
 
 export {
+  createUser,
   getUser,
 } from './user'
