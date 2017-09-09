@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Icon, List } from 'semantic-ui-react'
+import { graphql } from 'react-apollo'
+import { Button, Icon, Label, List } from 'semantic-ui-react'
 import CreateTopicForm from '../../../topics/CreateForm'
 import { getTopicColor, TOPIC_ICONS } from '../Details'
+import { getLeanCoffees, deleteTopic } from '../../../../graphql'
 
 class Collection extends Component {
   constructor(props) {
@@ -25,6 +27,10 @@ class Collection extends Component {
     })
   }
 
+  handleRemove = (id) => {
+    this.props.deleteTopic(id)
+  }
+
   render() {
     const { leanCoffeeId, loading, topics, userId } = this.props
 
@@ -45,6 +51,15 @@ class Collection extends Component {
                 <List.Header>{topic.name}</List.Header>
                 <List.Description>
                   Added by {topic.user ? topic.user.name : 'N/A'}.
+                  {' '}
+                  <Label
+                    as='a'
+                    color='red'
+                    onClick={() => this.handleRemove(topic.id)}
+                    size='mini'
+                  >
+                    Remove
+                  </Label>
                 </List.Description>
               </List.Content>
             </List.Item>
@@ -73,4 +88,13 @@ Collection.propTypes = {
   userId: PropTypes.string.isRequired,
 }
 
-export default Collection
+export default graphql(deleteTopic, {
+  props: ({ mutate }) => ({
+    deleteTopic: (id) => mutate({
+      refetchQueries: [
+        { query: getLeanCoffees }
+      ],
+      variables: { id }
+    })
+  })
+})(Collection)
