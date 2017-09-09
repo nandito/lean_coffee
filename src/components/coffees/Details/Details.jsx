@@ -97,6 +97,7 @@ class LeanCoffeeDetails extends Component {
                       leanCoffeeId={LeanCoffee.id}
                       loading={loading}
                       topics={LeanCoffee.topics}
+                      userId={user.id}
                     />
 
                   </Item.Description>

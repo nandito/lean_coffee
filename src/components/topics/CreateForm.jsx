@@ -10,16 +10,16 @@ class CreateTopicForm extends Component {
 
     this.state = {
       name: '',
-      state: '',
+      state: 'OPEN',
     }
   }
 
   handleSubmit = (event) => {
     event.preventDefault()
     const { name, state } = this.state
-    const { removeForm, leanCoffeeId, submit } = this.props
+    const { removeForm, leanCoffeeId, submit, userId } = this.props
 
-    submit(leanCoffeeId, name, state)
+    submit(leanCoffeeId, name, state, userId)
 
     removeForm && removeForm()
   }
@@ -45,11 +45,13 @@ class CreateTopicForm extends Component {
           value={this.state.name}
         />
         <Form.Field
+          disabled
           label='State'
           control={Select}
           onChange={(e, { value }) => this.handleSelectChange('state', value)}
           options={TOPIC_STATES}
           placeholder='Select state'
+          value={this.state.state}
           required
         />
         <Button type='submit' positive>Submit</Button>
@@ -73,14 +75,14 @@ const TOPIC_STATES = [
 
 export default graphql(createTopic, {
   props: ({ mutate }) => ({
-    submit: (leanCoffeeId, name, state) => {
+    submit: (leanCoffeeId, name, state, userId) => {
       if (leanCoffeeId) {
         return mutate({
           refetchQueries: [{
             query: getLeanCoffee,
             variables: { id: leanCoffeeId },
           }],
-          variables: { leanCoffeeId, name, state }
+          variables: { leanCoffeeId, name, state, userId }
         })
       }
       else {
@@ -88,7 +90,7 @@ export default graphql(createTopic, {
           refetchQueries: [
             { query: getTopics },
           ],
-          variables: { name, state }
+          variables: { name, state, userId }
         })
       }
     },

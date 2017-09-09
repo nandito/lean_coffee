@@ -26,7 +26,7 @@ class Collection extends Component {
   }
 
   render() {
-    const { leanCoffeeId, loading, topics } = this.props
+    const { leanCoffeeId, loading, topics, userId } = this.props
 
     if (loading) { return <div>loading...</div> }
 
@@ -59,6 +59,7 @@ class Collection extends Component {
             ? <CreateTopicForm
                 removeForm={this.handleAddTopicClose}
                 leanCoffeeId={leanCoffeeId}
+                userId={userId}
               />
             : <Button size='mini' onClick={this.handleAddTopicOpen}><Icon name='add' /> Add topic</Button>
           }
@@ -71,6 +72,7 @@ Collection.propTypes = {
   leanCoffeeId: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   topics: PropTypes.array,
+  userId: PropTypes.string.isRequired,
 }
 
 export default Collection
