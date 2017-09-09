@@ -136,6 +136,12 @@ export const getTopicColor = (topicState) => {
   }
 }
 
+export const TOPIC_ICONS = {
+  OPEN: 'square outline',
+  CURRENT: 'pointing right',
+  CLOSED: 'checkmark box',
+}
+
 const LEAN_COFFEE_STATE_COLORS = {
   'TOPIC_VOTING': 'pink',
   'TOPIC_COLLECTION': 'purple',

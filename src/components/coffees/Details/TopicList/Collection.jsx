@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Header, Icon, Label, List, } from 'semantic-ui-react'
+import { Button, Icon, List } from 'semantic-ui-react'
 import CreateTopicForm from '../../../topics/CreateForm'
-import { getTopicColor } from '../Details'
+import { getTopicColor, TOPIC_ICONS } from '../Details'
 
 class Collection extends Component {
   constructor(props) {
@@ -32,25 +32,23 @@ class Collection extends Component {
 
     return (
       <div>
-        <List bulleted>
+        <List>
           { !topics.length && <List.Item>There are no topics specified</List.Item> }
 
           { topics.length !== 0 && topics.map(topic => (
             <List.Item key={topic.id}>
-              <Header size='small'>
-                {topic.name}
-                <Label
-                  color={getTopicColor(topic.state)}
-                  pointing='left'
-                  size='mini'
-                  >
-                    {topic.state}
-                    <Label.Detail>
-                      {topic._votesMeta && topic._votesMeta.count}
-                    </Label.Detail>
-                  </Label>
-                </Header>
-              </List.Item>
+              <Icon
+                color={getTopicColor(topic.state)}
+                name={TOPIC_ICONS[topic.state]}
+              />
+              <List.Content>
+                <List.Header>{topic.name}</List.Header>
+                <List.Description>
+                  Added by {topic.user ? topic.user.name : 'N/A'}.
+                </List.Description>
+              </List.Content>
+            </List.Item>
+
             ))}
           </List>
 
