@@ -37,6 +37,10 @@ export const getLeanCoffee = gql`
       topics {
         id
         name
+        user {
+          id
+          name
+        }
         state
         _votesMeta {
           count

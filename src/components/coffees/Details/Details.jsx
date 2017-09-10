@@ -95,8 +95,10 @@ class LeanCoffeeDetails extends Component {
                     <TopicList
                       coffeeState={LeanCoffee.state}
                       leanCoffeeId={LeanCoffee.id}
+                      leanCoffeeUserId={LeanCoffee.user.id}
                       loading={loading}
                       topics={LeanCoffee.topics}
+                      userId={user.id}
                     />
 
                   </Item.Description>
@@ -133,6 +135,12 @@ export const getTopicColor = (topicState) => {
     default:
       return 'grey'
   }
+}
+
+export const TOPIC_ICONS = {
+  OPEN: 'square outline',
+  CURRENT: 'pointing right',
+  CLOSED: 'checkmark box',
 }
 
 const LEAN_COFFEE_STATE_COLORS = {
