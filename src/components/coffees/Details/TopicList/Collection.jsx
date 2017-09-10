@@ -31,8 +31,22 @@ class Collection extends Component {
     this.props.deleteTopic(id)
   }
 
+  renderRemoveButton = (topicId) => (
+    <span>
+      {' '}
+      <Label
+        as='a'
+        color='red'
+        onClick={() => this.handleRemove(topicId)}
+        size='mini'
+        >
+          Remove
+        </Label>
+    </span>
+  )
+
   render() {
-    const { leanCoffeeId, loading, topics, userId } = this.props
+    const { leanCoffeeId, leanCoffeeUserId, loading, topics, userId } = this.props
 
     if (loading) { return <div>loading...</div> }
 
@@ -51,15 +65,13 @@ class Collection extends Component {
                 <List.Header>{topic.name}</List.Header>
                 <List.Description>
                   Added by {topic.user ? topic.user.name : 'N/A'}.
-                  {' '}
-                  <Label
-                    as='a'
-                    color='red'
-                    onClick={() => this.handleRemove(topic.id)}
-                    size='mini'
-                  >
-                    Remove
-                  </Label>
+                  {
+                    (
+                      (leanCoffeeUserId === userId)
+                      || (topic.user && topic.user.id === userId)
+                    )
+                    && this.renderRemoveButton(topic.id)
+                  }
                 </List.Description>
               </List.Content>
             </List.Item>
@@ -83,6 +95,7 @@ class Collection extends Component {
 
 Collection.propTypes = {
   leanCoffeeId: PropTypes.string.isRequired,
+  leanCoffeeUserId: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   topics: PropTypes.array,
   userId: PropTypes.string.isRequired,

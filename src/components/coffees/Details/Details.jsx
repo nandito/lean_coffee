@@ -95,6 +95,7 @@ class LeanCoffeeDetails extends Component {
                     <TopicList
                       coffeeState={LeanCoffee.state}
                       leanCoffeeId={LeanCoffee.id}
+                      leanCoffeeUserId={LeanCoffee.user.id}
                       loading={loading}
                       topics={LeanCoffee.topics}
                       userId={user.id}
