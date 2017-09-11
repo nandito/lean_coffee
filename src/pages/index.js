@@ -6,3 +6,5 @@ export { default as Home } from './home/Home'
 export { default as ListParticipants } from './participant/List'
 
 export { default as ListTopics } from './topic/list/List'
+
+export { default as CreateUser } from './user/CreateUser'
