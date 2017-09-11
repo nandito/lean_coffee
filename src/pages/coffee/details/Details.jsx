@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { Button, Header, Icon, Label, List, Segment, Item } from 'semantic-ui-react'
 import { compose, graphql } from 'react-apollo'
 import moment from 'moment'
-import ChangeStateForm from '../ChangeStateForm'
-import TopicList from './TopicList/TopicList'
+import ChangeStateForm from './ChangeStateForm'
+import TopicList from './topic-list/TopicList'
 import { deleteLeanCoffee, getLeanCoffee, getLeanCoffees } from '../../../graphql'
 
 class LeanCoffeeDetails extends Component {

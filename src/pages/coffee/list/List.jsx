@@ -4,7 +4,7 @@ import { graphql } from 'react-apollo'
 import moment from 'moment'
 import { Card, Dimmer, Header, Label, Icon, Loader, Segment } from 'semantic-ui-react'
 import CreateLeanCoffee from './Create'
-import { getLeanCoffees } from '../../graphql'
+import { getLeanCoffees } from '../../../graphql'
 
 const ListLeanCoffees = ({ data }) => {
   if (data.loading) return (

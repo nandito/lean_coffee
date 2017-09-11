@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Form, Select } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
-import { getLeanCoffee, updateLeanCoffeeState } from '../../graphql'
+import { getLeanCoffee, updateLeanCoffeeState } from '../../../graphql'
 
 class ChangeStateForm extends Component {
   constructor(props) {

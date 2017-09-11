@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { compose, graphql } from 'react-apollo'
 import moment from 'moment'
 import { Button, Dimmer, Header, Icon, Loader, Table } from 'semantic-ui-react'
-import CreateTopicModal from './CreateModal'
-import { getTopics, deleteTopic } from '../../graphql'
+import CreateTopicModal from '../create/CreateModal'
+import { getTopics, deleteTopic } from '../../../graphql'
 
 const ListTopics = ({ data, handleDelete }) => {
 
