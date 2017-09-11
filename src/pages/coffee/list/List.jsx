@@ -4,6 +4,7 @@ import { graphql } from 'react-apollo'
 import moment from 'moment'
 import { Card, Dimmer, Header, Label, Icon, Loader, Segment } from 'semantic-ui-react'
 import CreateLeanCoffee from './Create'
+import { COFFEE_STATE_NAMES, COFFEE_STATE_COLORS } from '../constants'
 import { getLeanCoffees } from '../../../graphql'
 
 const ListLeanCoffees = ({ data }) => {
@@ -37,7 +38,10 @@ const ListLeanCoffees = ({ data }) => {
             <Card.Content>
               { index === 0 && <Label color='red' corner='left' icon='birthday' /> }
 
-              <Label as='a' size='mini' color='orange' ribbon='right'>{leanCoffee.state}</Label>
+              <Label size='small' color={COFFEE_STATE_COLORS[leanCoffee.state]} ribbon='right'>
+                {COFFEE_STATE_NAMES[leanCoffee.state]}
+              </Label>
+
               <Card.Header>
                 { moment(leanCoffee.createdAt).format('MMMM Do YYYY') }
               </Card.Header>
