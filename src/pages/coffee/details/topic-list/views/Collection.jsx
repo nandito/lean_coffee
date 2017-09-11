@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { graphql } from 'react-apollo'
 import { Button, Icon, Label, List } from 'semantic-ui-react'
-import CreateTopicForm from '../../../topics/CreateForm'
-import { getTopicColor, TOPIC_ICONS } from '../Details'
-import { getLeanCoffees, deleteTopic } from '../../../../graphql'
+import CreateTopicForm from '../../../../../components/topics/CreateForm'
+import { getTopicColor, TOPIC_ICONS } from '../../Details'
+import { getLeanCoffees, deleteTopic } from '../../../../../graphql'
 
 class Collection extends Component {
   constructor(props) {
