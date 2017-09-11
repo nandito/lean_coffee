@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { graphql } from 'react-apollo'
 import { Button, Form, Select, } from 'semantic-ui-react'
-import { createTopic, getLeanCoffee, getTopics } from '../../graphql'
+import { createTopic, getLeanCoffee, getTopics } from '../../../graphql'
 
 class CreateTopicForm extends Component {
   constructor(props) {

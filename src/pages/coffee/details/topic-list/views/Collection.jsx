@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { graphql } from 'react-apollo'
 import { Button, Icon, Label, List } from 'semantic-ui-react'
-import CreateTopicForm from '../../../../../components/topics/CreateForm'
+import CreateTopicForm from '../../../../topic/create/CreateForm'
 import { getTopicColor, TOPIC_ICONS } from '../../Details'
 import { getLeanCoffees, deleteTopic } from '../../../../../graphql'
 
