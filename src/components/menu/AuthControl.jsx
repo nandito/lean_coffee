@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Button, Menu } from 'semantic-ui-react'
-import LoginAuth0 from '../../LoginAuth0'
+import LoginAuth0 from './LoginAuth0'
 import { clientId, domain } from '../../App'
 
 class AuthControl extends Component {

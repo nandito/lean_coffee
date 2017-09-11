@@ -8,7 +8,7 @@ import ListParticipants from './components/participants/List'
 import ListTopics from './components/topics/List'
 import Home from './components/Home'
 import Loading from './components/loading/Loading'
-import TopMenu from './components/TopMenu'
+import Navbar from './components/menu/Navbar'
 import CreateUser from './components/user/CreateUser'
 import { getUser } from './graphql'
 
@@ -25,7 +25,7 @@ class App extends Component {
 
     return (
       <Container>
-        <TopMenu data={this.props.data} />
+        <Navbar data={this.props.data} />
 
         <Switch>
           <Route exact path="/" component={Home}/>

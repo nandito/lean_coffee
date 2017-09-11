@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router'
 import { Menu } from 'semantic-ui-react'
-import AuthControl from './menu/AuthControl'
+import AuthControl from './AuthControl'
 
-class TopMenu extends Component {
+class Navbar extends Component {
   state = { activeItem: 'participants' }
 
   handleItemClick = (e, { name }) => {
@@ -55,4 +55,4 @@ class TopMenu extends Component {
   }
 }
 
-export default withRouter(TopMenu)
+export default withRouter(Navbar)
