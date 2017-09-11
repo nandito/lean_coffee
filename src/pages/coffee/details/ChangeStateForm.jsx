@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Form, Select } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
+import { COFFEE_STATE_NAMES } from '../constants'
 import { getLeanCoffee, updateLeanCoffeeState } from '../../../graphql'
 
 class ChangeStateForm extends Component {
@@ -28,6 +29,9 @@ class ChangeStateForm extends Component {
 
   render() {
     const { state } = this.state
+    const stateOptions = Object.keys(COFFEE_STATE_NAMES).map(key => (
+      { text: COFFEE_STATE_NAMES[key], value: key }
+    ))
 
     return (
       <Form
@@ -37,7 +41,7 @@ class ChangeStateForm extends Component {
           label='State'
           control={Select}
           onChange={(e, { value }) => this.handleSelectChange('state', value)}
-          options={LEAN_COFFEE_STATES}
+          options={stateOptions}
           value={state}
           required
         />
@@ -55,12 +59,6 @@ ChangeStateForm.propTypes = {
   state: PropTypes.string.isRequired,
   submit: PropTypes.func.isRequired,
 }
-
-const LEAN_COFFEE_STATES = [
-  { text: 'Topic collection', value: 'TOPIC_COLLECTION' },
-  { text: 'Topic voting', value: 'TOPIC_VOTING' },
-  { text: 'Discussion', value: 'DISCUSSION' },
-]
 
 export default graphql(updateLeanCoffeeState, {
   props: ({ mutate }) => ({
