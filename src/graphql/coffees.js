@@ -46,6 +46,7 @@ export const getLeanCoffee = gql`
           count
         }
       }
+      votesPerUser
     }
     user {
       id

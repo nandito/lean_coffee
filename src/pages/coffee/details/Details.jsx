@@ -77,6 +77,7 @@ class LeanCoffeeDetails extends Component {
 
                       </List.Item>
                       <List.Item>hosted by: {LeanCoffee.user ? LeanCoffee.user.name : 'N/A'}</List.Item>
+                      <List.Item>each user has {LeanCoffee.votesPerUser} votes</List.Item>
                     </List>
                   </Item.Meta>
 
