@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { graphql } from 'react-apollo'
 import { Button, Form, Select, } from 'semantic-ui-react'
+import { TOPIC_STATE_NAMES } from '../constants'
 import { createTopic, getLeanCoffee, getTopics } from '../../../graphql'
 
 class CreateTopicForm extends Component {
@@ -34,6 +35,9 @@ class CreateTopicForm extends Component {
 
   render() {
     const { removeForm } = this.props
+    const stateOptions = Object.keys(TOPIC_STATE_NAMES).map(key => (
+      { text: TOPIC_STATE_NAMES[key], value: key }
+    ))
 
     return (
       <Form onSubmit={this.handleSubmit}>
@@ -49,7 +53,7 @@ class CreateTopicForm extends Component {
           label='State'
           control={Select}
           onChange={(e, { value }) => this.handleSelectChange('state', value)}
-          options={TOPIC_STATES}
+          options={stateOptions}
           placeholder='Select state'
           value={this.state.state}
           required
@@ -66,12 +70,6 @@ CreateTopicForm.propTypes = {
   leanCoffeeId: PropTypes.string,
   submit: PropTypes.func.isRequired
 }
-
-const TOPIC_STATES = [
-  { text: 'Current', value: 'CURRENT' },
-  { text: 'Open', value: 'OPEN' },
-  { text: 'Closed', value: 'CLOSED' },
-]
 
 export default graphql(createTopic, {
   props: ({ mutate }) => ({

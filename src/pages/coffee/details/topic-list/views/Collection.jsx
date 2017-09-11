@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { graphql } from 'react-apollo'
 import { Button, Icon, Label, List } from 'semantic-ui-react'
 import CreateTopicForm from '../../../../topic/create/CreateForm'
-import { getTopicColor, TOPIC_ICONS } from '../../Details'
+import { TOPIC_STATE_ICONS, TOPIC_STATE_COLORS } from '../../../../topic/constants'
 import { getLeanCoffees, deleteTopic } from '../../../../../graphql'
 
 class Collection extends Component {
@@ -58,8 +58,8 @@ class Collection extends Component {
           { topics.length !== 0 && topics.map(topic => (
             <List.Item key={topic.id}>
               <Icon
-                color={getTopicColor(topic.state)}
-                name={TOPIC_ICONS[topic.state]}
+                color={TOPIC_STATE_COLORS[topic.state]}
+                name={TOPIC_STATE_ICONS[topic.state]}
               />
               <List.Content>
                 <List.Header>{topic.name}</List.Header>

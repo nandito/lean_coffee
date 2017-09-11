@@ -5,6 +5,7 @@ import { compose, graphql } from 'react-apollo'
 import moment from 'moment'
 import ChangeStateForm from './ChangeStateForm'
 import TopicList from './topic-list/TopicList'
+import { COFFEE_STATE_NAMES, COFFEE_STATE_COLORS } from '../constants'
 import { deleteLeanCoffee, getLeanCoffee, getLeanCoffees } from '../../../graphql'
 
 class LeanCoffeeDetails extends Component {
@@ -39,8 +40,8 @@ class LeanCoffeeDetails extends Component {
   render() {
     const { data: { LeanCoffee, loading, user } } = this.props
     const { changeStateOpen } = this.state
-    const coffeeStateName = LeanCoffee && LEAN_COFFEE_STATE_NAMES[LeanCoffee.state]
-    const coffeeStateColor = LeanCoffee && LEAN_COFFEE_STATE_COLORS[LeanCoffee.state]
+    const coffeeStateName = LeanCoffee && COFFEE_STATE_NAMES[LeanCoffee.state]
+    const coffeeStateColor = LeanCoffee && COFFEE_STATE_COLORS[LeanCoffee.state]
 
     return (
       <div>
@@ -122,37 +123,6 @@ class LeanCoffeeDetails extends Component {
 LeanCoffeeDetails.propTypes = {
   data: PropTypes.object.isRequired,
   deleteLeanCoffee: PropTypes.func.isRequired,
-}
-
-export const getTopicColor = (topicState) => {
-  switch (topicState) {
-    case 'CURRENT':
-      return 'green'
-    case 'OPEN':
-      return 'blue'
-    case 'CLOSED':
-      return 'orange'
-    default:
-      return 'grey'
-  }
-}
-
-export const TOPIC_ICONS = {
-  OPEN: 'square outline',
-  CURRENT: 'pointing right',
-  CLOSED: 'checkmark box',
-}
-
-const LEAN_COFFEE_STATE_COLORS = {
-  'TOPIC_VOTING': 'pink',
-  'TOPIC_COLLECTION': 'purple',
-  'DISCUSSION': 'violet',
-}
-
-const LEAN_COFFEE_STATE_NAMES = {
-  'TOPIC_VOTING': 'Topic voting',
-  'TOPIC_COLLECTION': 'Topic collection',
-  'DISCUSSION': 'Discussion',
 }
 
 export default compose(
