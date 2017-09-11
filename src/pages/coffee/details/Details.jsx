@@ -125,25 +125,6 @@ LeanCoffeeDetails.propTypes = {
   deleteLeanCoffee: PropTypes.func.isRequired,
 }
 
-export const getTopicColor = (topicState) => {
-  switch (topicState) {
-    case 'CURRENT':
-      return 'green'
-    case 'OPEN':
-      return 'blue'
-    case 'CLOSED':
-      return 'orange'
-    default:
-      return 'grey'
-  }
-}
-
-export const TOPIC_ICONS = {
-  OPEN: 'square outline',
-  CURRENT: 'pointing right',
-  CLOSED: 'checkmark box',
-}
-
 export default compose(
   graphql(getLeanCoffee, {
     options: ({ match: { params: { id } } }) => ({
