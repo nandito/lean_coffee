@@ -5,7 +5,7 @@ import { Button, Table } from 'semantic-ui-react'
 import { TOPIC_STATE_NAMES } from '../../../../topic/constants'
 import { createVote, getLeanCoffee } from '../../../../../graphql'
 
-const Voting = ({ createVote, leanCoffeeId, loading, topics, userId }) => {
+const Voting = ({ createVote, leanCoffeeId, loading, topics, userId, votesLeft }) => {
   if (loading) { return <div>loading...</div> }
 
   return (
@@ -30,7 +30,7 @@ const Voting = ({ createVote, leanCoffeeId, loading, topics, userId }) => {
             <Table.Cell textAlign='center'>
               <Button
                 content='Vote'
-                disabled={topic.state !== 'OPEN'}
+                disabled={topic.state !== 'OPEN' || votesLeft < 1}
                 icon='hand paper'
                 onClick={() => createVote(leanCoffeeId, userId, topic.id)}
                 positive
@@ -58,7 +58,8 @@ Voting.propTypes = {
   leanCoffeeId: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   topics: PropTypes.array,
-  userId: PropTypes.string.isRequired
+  userId: PropTypes.string.isRequired,
+  votesLeft: PropTypes.number.isRequired,
 }
 
 export default graphql(createVote, {

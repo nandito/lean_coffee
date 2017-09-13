@@ -43,6 +43,7 @@ class LeanCoffeeDetails extends Component {
     const coffeeStateName = LeanCoffee && COFFEE_STATE_NAMES[LeanCoffee.state]
     const coffeeStateColor = LeanCoffee && COFFEE_STATE_COLORS[LeanCoffee.state]
     const currentUsersVoteCount = LeanCoffee && LeanCoffee.user && LeanCoffee.user.votesOnThisCoffee.count
+    const votesLeft = LeanCoffee && LeanCoffee.votesPerUser - currentUsersVoteCount
 
     return (
       <div>
@@ -79,7 +80,7 @@ class LeanCoffeeDetails extends Component {
                       </List.Item>
                       <List.Item>hosted by: {LeanCoffee.user ? LeanCoffee.user.name : 'N/A'}</List.Item>
                       <List.Item>each user has {LeanCoffee.votesPerUser} votes</List.Item>
-                      <List.Item>you have {LeanCoffee.votesPerUser - currentUsersVoteCount} votes left</List.Item>
+                      <List.Item>you have {votesLeft} votes left</List.Item>
                     </List>
                   </Item.Meta>
 
@@ -103,6 +104,7 @@ class LeanCoffeeDetails extends Component {
                       loading={loading}
                       topics={LeanCoffee.topics}
                       userId={user.id}
+                      votesLeft={votesLeft}
                     />
 
                   </Item.Description>
