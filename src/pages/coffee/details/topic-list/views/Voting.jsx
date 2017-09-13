@@ -40,15 +40,6 @@ const Voting = ({ createVote, leanCoffeeId, loading, topics, userId, votesLeft }
           </Table.Row>
         ) }
       </Table.Body>
-
-      <Table.Footer fullWidth>
-        <Table.Row>
-          <Table.HeaderCell colSpan='6'>
-            <Button disabled>Start discussion</Button>
-          </Table.HeaderCell>
-        </Table.Row>
-      </Table.Footer>
-
     </Table>
   )
 }

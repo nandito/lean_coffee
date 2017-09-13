@@ -7,7 +7,7 @@ import ChangeStateForm from './ChangeStateForm'
 import TopicList from './topic-list/TopicList'
 import { COFFEE_STATE_NAMES, COFFEE_STATE_COLORS } from '../constants'
 import { Loading } from '../../../components'
-import { deleteLeanCoffee, getLeanCoffee, getLeanCoffees } from '../../../graphql'
+import { deleteLeanCoffee, getLeanCoffee, getLeanCoffees, updateLeanCoffeeState } from '../../../graphql'
 
 class LeanCoffeeDetails extends Component {
   constructor(props) {
@@ -37,6 +37,30 @@ class LeanCoffeeDetails extends Component {
       history.push('/coffees')
     })
   }
+
+  handleStateChange = (nextState) => {
+    this.props.updateLeanCoffeeState(this.props.data.LeanCoffee.id, nextState)
+  }
+
+  renderControlButtons = (currentState) => (
+    <Item.Extra>
+     <Button floated='right' negative onClick={this.handleDelete}>Delete session</Button>
+     { currentState === 'TOPIC_COLLECTION' &&
+       <Button
+         floated='right'
+         color='blue'
+         content='Start voting'
+         onClick={() => this.handleStateChange('TOPIC_VOTING')}
+       /> }
+     { currentState === 'TOPIC_VOTING' &&
+       <Button
+         floated='right'
+         color='blue'
+         content='Start discussion'
+         onClick={() => this.handleStateChange('DISCUSSION')}
+       /> }
+   </Item.Extra>
+  )
 
   render() {
     const { data: { LeanCoffee, loading, user, error } } = this.props
@@ -79,7 +103,7 @@ class LeanCoffeeDetails extends Component {
                 <Item.Meta>
                   <List horizontal divided>
                     <List.Item>
-                      { user.id === LeanCoffee.user.id
+                      { currentUserIsTheHost
                         ? <Label
                             as='a'
                             color={coffeeStateColor}
@@ -101,7 +125,7 @@ class LeanCoffeeDetails extends Component {
 
                 <Item.Description>
                   {
-                    user.id === LeanCoffee.user.id && changeStateOpen
+                    currentUserIsTheHost && changeStateOpen
                     && <ChangeStateForm
                         hideForm={this.handleChangeStateClose}
                         id={LeanCoffee.id}
@@ -122,12 +146,7 @@ class LeanCoffeeDetails extends Component {
                   />
                 </Item.Description>
 
-                {
-                  currentUserIsTheHost
-                  && <Item.Extra>
-                       <Button floated='right' negative onClick={this.handleDelete}>Delete session</Button>
-                     </Item.Extra>
-                }
+                { currentUserIsTheHost && this.renderControlButtons(LeanCoffee.state) }
               </Item.Content>
             </Item>
           </Item.Group>
@@ -156,6 +175,16 @@ export default compose(
           { query: getLeanCoffees }
         ],
         variables: { id }
+      })
+    })
+  }),
+  graphql(updateLeanCoffeeState, {
+    props: ({ mutate }) => ({
+      updateLeanCoffeeState: (id, state) => mutate({
+        refetchQueries: [
+          { query: getLeanCoffees }
+        ],
+        variables: { id, state }
       })
     })
   })
