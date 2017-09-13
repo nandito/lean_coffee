@@ -31,6 +31,9 @@ export const getLeanCoffee = gql`
       user {
         id
         name
+        votesOnThisCoffee: _votesMeta(filter:{ leanCoffee:{ id: $id } }){
+          count
+        }
       },
       createdAt
       state
@@ -46,6 +49,7 @@ export const getLeanCoffee = gql`
           count
         }
       }
+      votesPerUser
     }
     user {
       id

@@ -22,3 +22,7 @@ export {
   createUser,
   getUser,
 } from './user'
+
+export {
+  createVote
+} from './vote'
