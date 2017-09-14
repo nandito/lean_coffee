@@ -1,10 +1,24 @@
 # Lean Coffee
 
-This is the front-end (client) only.
+_This is a pet project only, not a production ready app, use it on your own risk._
 
-It uses React + Apollo, the back-end is provided by [Graphcool](https://www.graph.cool/).
+## Summary
 
-### Getting started
+According to http://leancoffee.org/
+> Lean Coffee is a structured, but agenda-less meeting. Participants gather, build an agenda, and begin talking. Conversations are directed and productive because the agenda for the meeting was democratically generated.
+
+This app is a tool that helps organizing Lean Coffee sessions.
+
+## Technical details
+
+* The backend is hosted on [Graphcool](https://www.graph.cool/)
+* The frontend is a [React](https://facebook.github.io/react/) app, that uses
+  * [Apollo](http://dev.apollodata.com/react/) as GraphQL client
+  * [Semantic UI](http://react.semantic-ui.com/) as a component framework
+* Authorization is provided by [Auth0](https://auth0.com/)
+* The demo app is hosted on [Surge](http://surge.sh/)
+
+### Run the app on localhost
 
 * Clone the project: `$ git clone https://github.com/nandito/lean_coffee.git`
 * Go to the directory: `$ cd lean_coffee`
