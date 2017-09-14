@@ -1,73 +1,88 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { graphql } from 'react-apollo'
 import { Button, Card, Divider, Header, List } from 'semantic-ui-react'
 import { TopicFeed } from '../../../../../components'
+import { getLeanCoffee, updateTopicState } from '../../../../../graphql'
 
-const Discussion = ({ leanCoffeeId, loading, topics, userId }) => {
-  if (loading) { return <div>loading...</div> }
+class Discussion extends Component {
+  handleStartDiscussion = () => {
+    const { leanCoffeeId, topics, updateTopicState } = this.props
+    const upcomingTopics = topics
+      .filter(topic => topic.state === 'OPEN')
+      .sort((a,b) => (b._votesMeta.count - a._votesMeta.count))
 
-  if (!topics.length) {
-    return (
-      <Card centered>
-        <Card.Content>
-          <Card.Header>
-            There are no topics to discuss
-          </Card.Header>
-          <Card.Description>
-            Add some topics when the session is in topic collection state.
-          </Card.Description>
-        </Card.Content>
-      </Card>
-    )
+    updateTopicState(upcomingTopics[0].id, 'CURRENT', leanCoffeeId)
   }
 
-  const currentTopic = topics.filter(topic => topic.state === 'CURRENT')[0]
-  const upcomingTopics = topics.filter(topic => topic.state === 'OPEN')
-  const closedTopics = topics.filter(topic => topic.state === 'CLOSED')
+  render() {
+    const { leanCoffeeId, loading, topics, userId } = this.props
 
-  return (
-    <div>
-      <Card.Group stackable>
-        { currentTopic
-          ? (<Card centered>
-              <Card.Content>
-                <Divider horizontal>Current topic</Divider>
+    if (loading) { return <div>loading...</div> }
 
-                <Card.Description>
-                  <Header as='h2' content={currentTopic.name} textAlign='center' />
-                </Card.Description>
+    if (!topics.length) {
+      return (
+        <Card centered>
+          <Card.Content>
+            <Card.Header>
+              There are no topics to discuss
+            </Card.Header>
+            <Card.Description>
+              Add some topics when the session is in topic collection state.
+            </Card.Description>
+          </Card.Content>
+        </Card>
+      )
+    }
 
-                <Divider />
+    const currentTopic = topics.filter(topic => topic.state === 'CURRENT')[0]
+    const upcomingTopics = topics.filter(topic => topic.state === 'OPEN')
+    const closedTopics = topics.filter(topic => topic.state === 'CLOSED')
 
-                <Card.Meta>
-                  <List horizontal divided>
-                    <List.Item>added by {(currentTopic.user && currentTopic.user.name) || 'N/A'}</List.Item>
-                    <List.Item>has {currentTopic._votesMeta.count} votes</List.Item>
-                  </List>
-                </Card.Meta>
+    return (
+      <div>
+        <Card.Group stackable>
+          { currentTopic
+            ? (<Card centered>
+                <Card.Content>
+                  <Divider horizontal>Current topic</Divider>
 
-              </Card.Content>
-            </Card>)
-          : (<Card centered>
-              <Card.Content textAlign='center'>
-                { upcomingTopics.length
-                  ? <Button color='blue'>Discuss a topic</Button>
-                  : <Card.Header>
-                      There are no more topics.
-                    </Card.Header>
-                }
-              </Card.Content>
-            </Card>)
-        }
-      </Card.Group>
+                  <Card.Description>
+                    <Header as='h2' content={currentTopic.name} textAlign='center' />
+                  </Card.Description>
 
-      <Card.Group itemsPerRow='2' stackable>
-        <TopicFeed cardTitle='Upcoming' topics={upcomingTopics}/>
-        <TopicFeed cardTitle='Closed' topics={closedTopics}/>
-      </Card.Group>
+                  <Divider />
 
-    </div>
-  )
+                  <Card.Meta>
+                    <List horizontal divided>
+                      <List.Item>added by {(currentTopic.user && currentTopic.user.name) || 'N/A'}</List.Item>
+                      <List.Item>has {currentTopic._votesMeta.count} votes</List.Item>
+                    </List>
+                  </Card.Meta>
+
+                </Card.Content>
+              </Card>)
+            : (<Card centered>
+                <Card.Content textAlign='center'>
+                  { upcomingTopics.length
+                    ? <Button color='blue' onClick={this.handleStartDiscussion}>Discuss a topic</Button>
+                    : <Card.Header>
+                        There are no more topics.
+                      </Card.Header>
+                  }
+                </Card.Content>
+              </Card>)
+          }
+        </Card.Group>
+
+        <Card.Group itemsPerRow='2' stackable>
+          <TopicFeed cardTitle='Upcoming' topics={upcomingTopics}/>
+          <TopicFeed cardTitle='Closed' topics={closedTopics}/>
+        </Card.Group>
+
+      </div>
+    )
+  }
 }
 
 Discussion.propTypes = {
@@ -75,6 +90,24 @@ Discussion.propTypes = {
   loading: PropTypes.bool.isRequired,
   topics: PropTypes.array,
   userId: PropTypes.string.isRequired,
+  updateTopicState: PropTypes.func.isRequired,
 }
 
-export default Discussion
+export default graphql(updateTopicState, {
+  props: ({ mutate }) => ({
+    updateTopicState: (id, state, leanCoffeeId) => mutate({
+      refetchQueries: [
+        {
+          query: getLeanCoffee,
+          variables: {
+            id: leanCoffeeId,
+          }
+        }
+      ],
+      variables: {
+        id,
+        state,
+      }
+    })
+  })
+})(Discussion)

@@ -6,8 +6,6 @@ const TopicFeed = ({ topics, cardTitle }) => (
   <Card>
     <Card.Content>
       <Card.Header>{cardTitle}</Card.Header>
-    </Card.Content>
-    <Card.Content>
       <Feed>
         { topics.length
           ? topics.map(topic => (

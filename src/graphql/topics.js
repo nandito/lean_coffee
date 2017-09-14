@@ -32,3 +32,11 @@ export const deleteTopic = gql`
     }
   }
 `
+
+export const updateTopicState = gql`
+  mutation updateTopic($id: ID!, $state: TopicState!) {
+    updateTopic(id: $id, state: $state) {
+      id
+    }
+  }
+`
