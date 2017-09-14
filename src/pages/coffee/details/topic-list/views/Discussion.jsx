@@ -15,25 +15,58 @@ class Discussion extends Component {
     updateTopicState(upcomingTopics[0].id, 'CURRENT', leanCoffeeId)
   }
 
+  renderCurrentTopic = (currentTopic) => (
+    <Card centered>
+      <Card.Content>
+        <Divider horizontal>Current topic</Divider>
+
+        <Card.Description>
+          <Header as='h2' content={currentTopic.name} textAlign='center' />
+        </Card.Description>
+
+        <Divider />
+
+        <Card.Meta>
+          <List horizontal divided>
+            <List.Item>added by {(currentTopic.user && currentTopic.user.name) || 'N/A'}</List.Item>
+            <List.Item>has {currentTopic._votesMeta.count} votes</List.Item>
+          </List>
+        </Card.Meta>
+
+      </Card.Content>
+    </Card>
+  )
+
+  renderTopicPicker = (upcomingTopics) => (
+    <Card centered>
+      <Card.Content textAlign='center'>
+        { upcomingTopics.length
+          ? <Button color='blue' onClick={this.handleStartDiscussion}>Discuss a topic</Button>
+          : <Card.Header content='There are no more topics.' />
+        }
+      </Card.Content>
+    </Card>
+  )
+
+  renderNoTopic = () => (
+    <Card centered>
+      <Card.Content>
+        <Card.Header>
+          There are no topics to discuss
+        </Card.Header>
+        <Card.Description>
+          Add some topics when the session is in topic collection state.
+        </Card.Description>
+      </Card.Content>
+    </Card>
+  )
+
   render() {
     const { leanCoffeeId, loading, topics, userId } = this.props
 
     if (loading) { return <div>loading...</div> }
 
-    if (!topics.length) {
-      return (
-        <Card centered>
-          <Card.Content>
-            <Card.Header>
-              There are no topics to discuss
-            </Card.Header>
-            <Card.Description>
-              Add some topics when the session is in topic collection state.
-            </Card.Description>
-          </Card.Content>
-        </Card>
-      )
-    }
+    if (!topics.length) { return this.renderNoTopic() }
 
     const currentTopic = topics.filter(topic => topic.state === 'CURRENT')[0]
     const upcomingTopics = topics.filter(topic => topic.state === 'OPEN')
@@ -43,35 +76,8 @@ class Discussion extends Component {
       <div>
         <Card.Group stackable>
           { currentTopic
-            ? (<Card centered>
-                <Card.Content>
-                  <Divider horizontal>Current topic</Divider>
-
-                  <Card.Description>
-                    <Header as='h2' content={currentTopic.name} textAlign='center' />
-                  </Card.Description>
-
-                  <Divider />
-
-                  <Card.Meta>
-                    <List horizontal divided>
-                      <List.Item>added by {(currentTopic.user && currentTopic.user.name) || 'N/A'}</List.Item>
-                      <List.Item>has {currentTopic._votesMeta.count} votes</List.Item>
-                    </List>
-                  </Card.Meta>
-
-                </Card.Content>
-              </Card>)
-            : (<Card centered>
-                <Card.Content textAlign='center'>
-                  { upcomingTopics.length
-                    ? <Button color='blue' onClick={this.handleStartDiscussion}>Discuss a topic</Button>
-                    : <Card.Header>
-                        There are no more topics.
-                      </Card.Header>
-                  }
-                </Card.Content>
-              </Card>)
+            ? this.renderCurrentTopic(currentTopic)
+            : this.renderTopicPicker(upcomingTopics)
           }
         </Card.Group>
 
