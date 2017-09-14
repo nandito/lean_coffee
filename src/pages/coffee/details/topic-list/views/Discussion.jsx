@@ -38,26 +38,36 @@ class Discussion extends Component {
             <List.Item>has {currentTopic._votesMeta.count} votes</List.Item>
           </List>
         </Card.Meta>
-
       </Card.Content>
 
-      <Card.Content textAlign='center' extra>
-        <Button
-          basic
-          color='blue'
-          content='Close topic'
-          size='small'
-          onClick={() => this.handleClose(currentTopic.id)}
-        />
-      </Card.Content>
+      { this.props.leanCoffeeUserId === this.props.userId
+        && <Card.Content textAlign='center' extra>
+             <Button
+               basic
+               color='blue'
+               content='Close topic'
+               size='small'
+               onClick={() => this.handleClose(currentTopic.id)}
+             />
+           </Card.Content>
+      }
     </Card>
   )
+
+  renderControl = () => {
+    if (this.props.leanCoffeeUserId === this.props.userId) {
+      return <Button basic color='blue' content='Discuss a topic' onClick={this.handleStartDiscussion} />
+    }
+    else {
+      return <Card.Header content='Waiting for the host' />
+    }
+  }
 
   renderTopicPicker = (upcomingTopics) => (
     <Card centered>
       <Card.Content textAlign='center'>
         { upcomingTopics.length
-          ? <Button basic color='blue' content='Discuss a topic' onClick={this.handleStartDiscussion} />
+          ? this.renderControl()
           : <Card.Header content='There are no more topics.' />
         }
       </Card.Content>
@@ -78,7 +88,7 @@ class Discussion extends Component {
   )
 
   render() {
-    const { leanCoffeeId, loading, topics, userId } = this.props
+    const { loading, topics } = this.props
 
     if (loading) { return <div>loading...</div> }
 
@@ -109,6 +119,7 @@ class Discussion extends Component {
 
 Discussion.propTypes = {
   leanCoffeeId: PropTypes.string.isRequired,
+  leanCoffeeUserId: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   topics: PropTypes.array,
   userId: PropTypes.string.isRequired,
