@@ -16,6 +16,7 @@ export {
   createTopic,
   deleteTopic,
   getTopics,
+  updateTopicState,
 } from './topics'
 
 export {

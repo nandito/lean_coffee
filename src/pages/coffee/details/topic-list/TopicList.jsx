@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Voting from './views/Voting.jsx'
 import Collection from './views/Collection.jsx'
+import Voting from './views/Voting.jsx'
+import Discussion from './views/Discussion.jsx'
 
 const LISTS = {
   'TOPIC_COLLECTION': Collection,
   'TOPIC_VOTING': Voting,
-  'DISCUSSION': 'tbd',
+  'DISCUSSION': Discussion,
 }
 
 const TopicList = (props) => {
