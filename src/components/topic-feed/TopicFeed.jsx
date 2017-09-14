@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Card, Feed } from 'semantic-ui-react'
+import { TOPIC_STATE_ICONS } from '../../pages/topic/constants'
 
 const TopicFeed = ({ topics, cardTitle }) => (
   <Card>
@@ -10,6 +11,7 @@ const TopicFeed = ({ topics, cardTitle }) => (
         { topics.length
           ? topics.map(topic => (
               <Feed.Event key={topic.id}>
+                <Feed.Label icon={TOPIC_STATE_ICONS[topic.state]} />
                 <Feed.Content>
                   <Feed.Summary>{topic.name}</Feed.Summary>
                   <Feed.Meta>{topic._votesMeta.count} votes</Feed.Meta>

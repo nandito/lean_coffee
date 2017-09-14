@@ -15,6 +15,12 @@ class Discussion extends Component {
     updateTopicState(upcomingTopics[0].id, 'CURRENT', leanCoffeeId)
   }
 
+  handleClose = (id) => {
+    const { leanCoffeeId, updateTopicState } = this.props
+
+    updateTopicState(id, 'CLOSED', leanCoffeeId)
+  }
+
   renderCurrentTopic = (currentTopic) => (
     <Card centered>
       <Card.Content>
@@ -26,13 +32,23 @@ class Discussion extends Component {
 
         <Divider />
 
-        <Card.Meta>
+        <Card.Meta textAlign='center'>
           <List horizontal divided>
             <List.Item>added by {(currentTopic.user && currentTopic.user.name) || 'N/A'}</List.Item>
             <List.Item>has {currentTopic._votesMeta.count} votes</List.Item>
           </List>
         </Card.Meta>
 
+      </Card.Content>
+
+      <Card.Content textAlign='center' extra>
+        <Button
+          basic
+          color='blue'
+          content='Close topic'
+          size='small'
+          onClick={() => this.handleClose(currentTopic.id)}
+        />
       </Card.Content>
     </Card>
   )
@@ -41,7 +57,7 @@ class Discussion extends Component {
     <Card centered>
       <Card.Content textAlign='center'>
         { upcomingTopics.length
-          ? <Button color='blue' onClick={this.handleStartDiscussion}>Discuss a topic</Button>
+          ? <Button basic color='blue' content='Discuss a topic' onClick={this.handleStartDiscussion} />
           : <Card.Header content='There are no more topics.' />
         }
       </Card.Content>
