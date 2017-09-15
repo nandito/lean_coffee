@@ -5,10 +5,11 @@ export {
 } from './participant'
 
 export {
+  createLeanCoffee,
   deleteLeanCoffee,
   getLeanCoffee,
   getLeanCoffees,
-  createLeanCoffee,
+  leanCoffeeStateSubscription,
   updateLeanCoffeeState,
 } from './coffees'
 

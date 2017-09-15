@@ -74,3 +74,16 @@ export const deleteLeanCoffee = gql`
     }
   }
 `
+
+export const leanCoffeeStateSubscription = gql`
+  subscription stateChangeSubscription($id: ID!) {
+    LeanCoffee(filter: {
+      mutation_in: [UPDATED, CREATED, DELETED],
+      node: { id: $id }
+    }) {
+      node {
+        state
+      }
+    }
+  }
+`

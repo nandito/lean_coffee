@@ -7,7 +7,7 @@ import ChangeStateForm from './ChangeStateForm'
 import TopicList from './topic-list/TopicList'
 import { COFFEE_STATE_NAMES, COFFEE_STATE_COLORS } from '../constants'
 import { Loading } from '../../../components'
-import { deleteLeanCoffee, getLeanCoffee, getLeanCoffees, updateLeanCoffeeState } from '../../../graphql'
+import { deleteLeanCoffee, getLeanCoffee, getLeanCoffees, leanCoffeeStateSubscription, updateLeanCoffeeState } from '../../../graphql'
 
 class LeanCoffeeDetails extends Component {
   constructor(props) {
@@ -16,6 +16,30 @@ class LeanCoffeeDetails extends Component {
     this.state = {
       changeStateOpen: false,
     }
+  }
+
+  componentDidMount() {
+    const { data, match: { params: { id } } } = this.props
+
+    this.createLeanCoffeeSubscription = data.subscribeToMore({
+      document: leanCoffeeStateSubscription,
+      variables: { id },
+      updateQuery: (previousState, {subscriptionData}) => {
+        if (!subscriptionData.data) {
+            return previousState
+        }
+
+        const newState = subscriptionData.data.LeanCoffee.node.state
+
+        return Object.assign({}, previousState, {
+          LeanCoffee: {
+            ...previousState.LeanCoffee,
+            state: newState,
+          }
+        })
+      },
+      onError: (err) => console.error(err),
+    })
   }
 
   handleChangeStateOpen = () => {
