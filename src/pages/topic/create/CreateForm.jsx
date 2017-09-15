@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { graphql } from 'react-apollo'
 import { Button, Form, Select, } from 'semantic-ui-react'
 import { TOPIC_STATE_NAMES } from '../constants'
-import { createTopic, getLeanCoffee, getTopics } from '../../../graphql'
+import { createTopic, getTopicsOfLeanCoffee, getTopics } from '../../../graphql'
 
 class CreateTopicForm extends Component {
   constructor(props) {
@@ -77,7 +77,7 @@ export default graphql(createTopic, {
       if (leanCoffeeId) {
         return mutate({
           refetchQueries: [{
-            query: getLeanCoffee,
+            query: getTopicsOfLeanCoffee,
             variables: { id: leanCoffeeId },
           }],
           variables: { leanCoffeeId, name, state, userId }

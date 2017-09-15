@@ -40,3 +40,20 @@ export const updateTopicState = gql`
     }
   }
 `
+
+export const getTopicsOfLeanCoffee = gql`
+  query topicsOfCoffee($id:ID!){
+    allTopics(filter:{ leanCoffee: { id:$id } }){
+      id
+      name
+      user {
+        id
+        name
+      }
+      state
+      _votesMeta {
+        count
+      }
+    }
+  }
+`

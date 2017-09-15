@@ -17,6 +17,7 @@ export {
   createTopic,
   deleteTopic,
   getTopics,
+  getTopicsOfLeanCoffee,
   updateTopicState,
 } from './topics'
 
