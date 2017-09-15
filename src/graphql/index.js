@@ -18,6 +18,7 @@ export {
   deleteTopic,
   getTopics,
   getTopicsOfLeanCoffee,
+  topicsOfLeanCoffeeSubscription,
   updateTopicState,
 } from './topics'
 

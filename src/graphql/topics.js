@@ -57,3 +57,25 @@ export const getTopicsOfLeanCoffee = gql`
     }
   }
 `
+
+export const topicsOfLeanCoffeeSubscription = gql`
+  subscription topicsOfLeanCoffeeSubscription($id: ID!) {
+    Topic(filter: { node: { leanCoffee: { id:$id } } }) {
+      node {
+        id
+        name
+        state
+        user {
+          name
+          id
+        }
+        _votesMeta {
+          count
+        }
+      }
+      previousValues {
+        id
+      }
+    }
+  }
+`

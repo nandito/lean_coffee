@@ -4,7 +4,7 @@ import { graphql, compose } from 'react-apollo'
 import { Button, Icon, Label, List } from 'semantic-ui-react'
 import CreateTopicForm from '../../../../topic/create/CreateForm'
 import { TOPIC_STATE_ICONS, TOPIC_STATE_COLORS } from '../../../../topic/constants'
-import { deleteTopic, getTopicsOfLeanCoffee } from '../../../../../graphql'
+import { deleteTopic, getTopicsOfLeanCoffee, topicsOfLeanCoffeeSubscription } from '../../../../../graphql'
 
 class Collection extends Component {
   constructor(props) {
@@ -13,6 +13,35 @@ class Collection extends Component {
     this.state = {
       addTopicOpen: false,
     }
+  }
+
+  componentDidMount() {
+    const { data, leanCoffeeId } = this.props
+
+    this.createTopicsSubscription = data.subscribeToMore({
+      document: topicsOfLeanCoffeeSubscription,
+      variables: { id: leanCoffeeId },
+      updateQuery: (previousState, {subscriptionData}) => {
+        if (!subscriptionData.data) {
+            return previousState
+        }
+
+        const newTopic = subscriptionData.data.Topic.node
+
+        if (!newTopic) {
+          const removedTopicId = subscriptionData.data.Topic.previousValues.id
+
+          return Object.assign({}, previousState, {
+            allTopics: previousState.allTopics.filter(topic => topic.id !== removedTopicId)
+          })
+        }
+
+        return Object.assign({}, previousState, {
+          allTopics: [...previousState.allTopics, newTopic]
+        })
+      },
+      onError: (err) => console.error(err),
+    })
   }
 
   handleAddTopicOpen = () => {
