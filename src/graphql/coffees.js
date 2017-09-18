@@ -34,18 +34,6 @@ export const getLeanCoffee = gql`
       },
       createdAt
       state
-      topics {
-        id
-        name
-        user {
-          id
-          name
-        }
-        state
-        _votesMeta {
-          count
-        }
-      }
       votesPerUser
       _votesMeta(filter:
         {

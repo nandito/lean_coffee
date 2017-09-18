@@ -62,7 +62,6 @@ Voting.propTypes = {
   createVote: PropTypes.func.isRequired,
   leanCoffeeId: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
-  topics: PropTypes.array,
   userId: PropTypes.string.isRequired,
   votesLeft: PropTypes.number.isRequired,
 }
