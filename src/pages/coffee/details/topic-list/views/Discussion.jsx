@@ -7,18 +7,18 @@ import { getLeanCoffee, updateTopicState } from '../../../../../graphql'
 
 class Discussion extends Component {
   handleStartDiscussion = () => {
-    const { leanCoffeeId, topics, updateTopicState } = this.props
+    const { leanCoffeeId, topics, updateTopicState, userId } = this.props
     const upcomingTopics = topics
       .filter(topic => topic.state === 'OPEN')
       .sort((a,b) => (b._votesMeta.count - a._votesMeta.count))
 
-    updateTopicState(upcomingTopics[0].id, 'CURRENT', leanCoffeeId)
+    updateTopicState(upcomingTopics[0].id, 'CURRENT', leanCoffeeId, userId)
   }
 
   handleClose = (id) => {
-    const { leanCoffeeId, updateTopicState } = this.props
+    const { leanCoffeeId, updateTopicState, userId } = this.props
 
-    updateTopicState(id, 'CLOSED', leanCoffeeId)
+    updateTopicState(id, 'CLOSED', leanCoffeeId, userId)
   }
 
   renderCurrentTopic = (currentTopic) => (
@@ -128,12 +128,13 @@ Discussion.propTypes = {
 
 export default graphql(updateTopicState, {
   props: ({ mutate }) => ({
-    updateTopicState: (id, state, leanCoffeeId) => mutate({
+    updateTopicState: (id, state, leanCoffeeId, userId) => mutate({
       refetchQueries: [
         {
           query: getLeanCoffee,
           variables: {
-            id: leanCoffeeId,
+            leanCoffeeId,
+            userId,
           }
         }
       ],

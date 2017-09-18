@@ -7,3 +7,18 @@ export const createVote = gql`
     }
   }
 `
+
+export const votesOfLeanCoffeeSubscription = gql`
+  subscription votesOfLeanCoffeeSubscription($id: ID!) {
+    Vote(filter: { node: { leanCoffee: { id:$id } } }) {
+      node {
+        topic {
+          id
+          _votesMeta {
+            count
+          }
+        }
+      }
+    }
+  }
+`

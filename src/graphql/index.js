@@ -28,5 +28,6 @@ export {
 } from './user'
 
 export {
-  createVote
+  createVote,
+  votesOfLeanCoffeeSubscription,
 } from './vote'

@@ -25,15 +25,12 @@ export const createLeanCoffee = gql`
 `
 
 export const getLeanCoffee = gql`
-  query LeanCoffee($id: ID!) {
-    LeanCoffee(id: $id) {
+  query LeanCoffee($leanCoffeeId: ID!, $userId: ID!) {
+    LeanCoffee(id: $leanCoffeeId) {
       id
       user {
         id
         name
-        votesOnThisCoffee: _votesMeta(filter:{ leanCoffee:{ id: $id } }){
-          count
-        }
       },
       createdAt
       state
@@ -50,6 +47,14 @@ export const getLeanCoffee = gql`
         }
       }
       votesPerUser
+      _votesMeta(filter:
+        {
+          leanCoffee: { id: $leanCoffeeId },
+          user: { id: $userId },
+        }
+      ){
+        count
+      }
     }
     user {
       id
