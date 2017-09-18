@@ -1,74 +1,96 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { graphql } from 'react-apollo'
+import { compose, graphql } from 'react-apollo'
 import { Button, Table } from 'semantic-ui-react'
 import { TOPIC_STATE_NAMES } from '../../../../topic/constants'
-import { createVote, getLeanCoffee } from '../../../../../graphql'
+import { createVote, getLeanCoffee, getTopicsOfLeanCoffee, votesOfLeanCoffeeSubscription } from '../../../../../graphql'
 
-const Voting = ({ createVote, leanCoffeeId, loading, topics, userId, votesLeft }) => {
-  if (loading) { return <div>loading...</div> }
+class Voting extends Component {
+  componentDidMount() {
+    const { data, leanCoffeeId } = this.props
 
-  return (
-    <Table compact celled selectable>
-      <Table.Header>
-        <Table.Row textAlign='center'>
-          <Table.HeaderCell>Name</Table.HeaderCell>
-          <Table.HeaderCell>Votes</Table.HeaderCell>
-          <Table.HeaderCell>State</Table.HeaderCell>
-          <Table.HeaderCell>Action</Table.HeaderCell>
-        </Table.Row>
-      </Table.Header>
+    this.createVoteSubscription = data.subscribeToMore({
+      document: votesOfLeanCoffeeSubscription,
+      variables: { id: leanCoffeeId },
+      onError: (err) => console.error(err),
+    })
+  }
 
-      <Table.Body>
-        { topics.map(topic =>
-          <Table.Row key={topic.id} disabled={topic.state !== 'OPEN'}>
-            <Table.Cell>{topic.name}</Table.Cell>
-            <Table.Cell textAlign='center'>{topic._votesMeta.count}</Table.Cell>
-            <Table.Cell textAlign='center'>
-              {TOPIC_STATE_NAMES[topic.state]}
-            </Table.Cell>
-            <Table.Cell textAlign='center'>
-              <Button
-                content='Vote'
-                disabled={topic.state !== 'OPEN' || votesLeft < 1}
-                icon='hand paper'
-                onClick={() => createVote(leanCoffeeId, userId, topic.id)}
-                positive
-                size='small'
-              />
-            </Table.Cell>
+  render() {
+    const { createVote, data: { loading, allTopics }, leanCoffeeId, userId, votesLeft } = this.props
+
+    if (loading) { return <div>loading...</div> }
+
+    return (
+      <Table compact celled selectable>
+        <Table.Header>
+          <Table.Row textAlign='center'>
+            <Table.HeaderCell>Name</Table.HeaderCell>
+            <Table.HeaderCell>Votes</Table.HeaderCell>
+            <Table.HeaderCell>State</Table.HeaderCell>
+            <Table.HeaderCell>Action</Table.HeaderCell>
           </Table.Row>
-        ) }
-      </Table.Body>
-    </Table>
-  )
+        </Table.Header>
+
+        <Table.Body>
+          { allTopics.map(topic =>
+            <Table.Row key={topic.id} disabled={topic.state !== 'OPEN'}>
+              <Table.Cell>{topic.name}</Table.Cell>
+              <Table.Cell textAlign='center'>{topic._votesMeta.count}</Table.Cell>
+              <Table.Cell textAlign='center'>
+                {TOPIC_STATE_NAMES[topic.state]}
+              </Table.Cell>
+              <Table.Cell textAlign='center'>
+                <Button
+                  content='Vote'
+                  disabled={topic.state !== 'OPEN' || votesLeft < 1}
+                  icon='hand paper'
+                  onClick={() => createVote(leanCoffeeId, userId, topic.id)}
+                  positive
+                  size='small'
+                />
+              </Table.Cell>
+            </Table.Row>
+          ) }
+        </Table.Body>
+      </Table>
+    )
+  }
 }
 
 Voting.propTypes = {
   createVote: PropTypes.func.isRequired,
   leanCoffeeId: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
-  topics: PropTypes.array,
   userId: PropTypes.string.isRequired,
   votesLeft: PropTypes.number.isRequired,
 }
 
-export default graphql(createVote, {
-  props: ({ mutate }) => ({
-    createVote: (leanCoffeeId, userId, topicId) => mutate({
-      refetchQueries: [
-        {
-          query: getLeanCoffee,
-          variables: {
-            id: leanCoffeeId,
+export default compose(
+  graphql(getTopicsOfLeanCoffee, {
+    options: ({ leanCoffeeId }) => ({
+      fetchPolicy: 'network-only',
+      variables: { id: leanCoffeeId },
+    })
+  }),
+  graphql(createVote, {
+    props: ({ mutate }) => ({
+      createVote: (leanCoffeeId, userId, topicId) => mutate({
+        refetchQueries: [
+          {
+            query: getLeanCoffee,
+            variables: {
+              leanCoffeeId,
+              userId,
+            }
           }
+        ],
+        variables: {
+          leanCoffeeId,
+          userId,
+          topicId,
         }
-      ],
-      variables: {
-        leanCoffeeId,
-        userId,
-        topicId,
-      }
+      })
     })
   })
-})(Voting)
+)(Voting)

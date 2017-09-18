@@ -7,7 +7,7 @@ import ChangeStateForm from './ChangeStateForm'
 import TopicList from './topic-list/TopicList'
 import { COFFEE_STATE_NAMES, COFFEE_STATE_COLORS } from '../constants'
 import { Loading } from '../../../components'
-import { deleteLeanCoffee, getLeanCoffee, getLeanCoffees, updateLeanCoffeeState } from '../../../graphql'
+import { deleteLeanCoffee, getLeanCoffee, getLeanCoffees, leanCoffeeStateSubscription, updateLeanCoffeeState } from '../../../graphql'
 
 class LeanCoffeeDetails extends Component {
   constructor(props) {
@@ -16,6 +16,30 @@ class LeanCoffeeDetails extends Component {
     this.state = {
       changeStateOpen: false,
     }
+  }
+
+  componentDidMount() {
+    const { data, match: { params: { id } } } = this.props
+
+    this.createLeanCoffeeSubscription = data.subscribeToMore({
+      document: leanCoffeeStateSubscription,
+      variables: { id },
+      updateQuery: (previousState, {subscriptionData}) => {
+        if (!subscriptionData.data) {
+            return previousState
+        }
+
+        const newState = subscriptionData.data.LeanCoffee.node.state
+
+        return Object.assign({}, previousState, {
+          LeanCoffee: {
+            ...previousState.LeanCoffee,
+            state: newState,
+          }
+        })
+      },
+      onError: (err) => console.error(err),
+    })
   }
 
   handleChangeStateOpen = () => {
@@ -39,7 +63,9 @@ class LeanCoffeeDetails extends Component {
   }
 
   handleStateChange = (nextState) => {
-    this.props.updateLeanCoffeeState(this.props.data.LeanCoffee.id, nextState)
+    const { data:{ LeanCoffee, user }, updateLeanCoffeeState } = this.props
+
+    updateLeanCoffeeState(LeanCoffee.id, nextState, user.id)
   }
 
   renderControlButtons = (currentState) => (
@@ -81,7 +107,7 @@ class LeanCoffeeDetails extends Component {
     const { changeStateOpen } = this.state
     const coffeeStateName = COFFEE_STATE_NAMES[LeanCoffee.state]
     const coffeeStateColor = COFFEE_STATE_COLORS[LeanCoffee.state]
-    const currentUsersVoteCount = LeanCoffee.user && LeanCoffee.user.votesOnThisCoffee.count
+    const currentUsersVoteCount = LeanCoffee._votesMeta.count
     const votesLeft = LeanCoffee.votesPerUser - currentUsersVoteCount
     const currentUserIsTheHost = user.id === LeanCoffee.user.id
 
@@ -130,6 +156,7 @@ class LeanCoffeeDetails extends Component {
                         hideForm={this.handleChangeStateClose}
                         id={LeanCoffee.id}
                         state={LeanCoffee.state}
+                        userId={user.id}
                       />
                   }
 
@@ -140,7 +167,6 @@ class LeanCoffeeDetails extends Component {
                     leanCoffeeId={LeanCoffee.id}
                     leanCoffeeUserId={LeanCoffee.user.id}
                     loading={loading}
-                    topics={LeanCoffee.topics}
                     userId={user.id}
                     votesLeft={votesLeft}
                   />
@@ -163,9 +189,12 @@ LeanCoffeeDetails.propTypes = {
 
 export default compose(
   graphql(getLeanCoffee, {
-    options: ({ match: { params: { id } } }) => ({
+    options: ({ match: { params: { id } }, userId }) => ({
       fetchPolicy: 'network-only',
-      variables: { id },
+      variables: {
+        leanCoffeeId: id,
+        userId,
+      },
     })
   }),
   graphql(deleteLeanCoffee, {
@@ -180,9 +209,15 @@ export default compose(
   }),
   graphql(updateLeanCoffeeState, {
     props: ({ mutate }) => ({
-      updateLeanCoffeeState: (id, state) => mutate({
+      updateLeanCoffeeState: (id, state, userId) => mutate({
         refetchQueries: [
-          { query: getLeanCoffees }
+          {
+            query: getLeanCoffee,
+            variables: {
+              leanCoffeeId: id,
+              userId,
+            },
+          }
         ],
         variables: { id, state }
       })

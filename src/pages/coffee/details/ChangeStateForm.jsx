@@ -16,10 +16,10 @@ class ChangeStateForm extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault()
-    const { hideForm, id, submit } = this.props
+    const { hideForm, id, submit, userId } = this.props
     const { state } = this.state
 
-    submit({ id, state })
+    submit({ id, state, userId })
     hideForm()
   }
 
@@ -58,15 +58,19 @@ ChangeStateForm.propTypes = {
   id: PropTypes.string.isRequired,
   state: PropTypes.string.isRequired,
   submit: PropTypes.func.isRequired,
+  userId: PropTypes.string.isRequired,
 }
 
 export default graphql(updateLeanCoffeeState, {
   props: ({ mutate }) => ({
-    submit: ({ id, state }) => mutate(
+    submit: ({ id, state, userId }) => mutate(
       {
         refetchQueries: [{
           query: getLeanCoffee,
-          variables: { id }
+          variables: {
+            leanCoffeeId: id,
+            userId
+          }
         }],
         variables: {
           id,

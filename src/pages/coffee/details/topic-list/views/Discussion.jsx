@@ -1,24 +1,47 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { graphql } from 'react-apollo'
+import { compose, graphql } from 'react-apollo'
 import { Button, Card, Divider, Header, List } from 'semantic-ui-react'
 import { TopicFeed } from '../../../../../components'
-import { getLeanCoffee, updateTopicState } from '../../../../../graphql'
+import { getLeanCoffee, getTopicsOfLeanCoffee, topicsOfLeanCoffeeSubscription, updateTopicState } from '../../../../../graphql'
 
 class Discussion extends Component {
+  componentDidMount() {
+    const { data, leanCoffeeId } = this.props
+
+    this.createTopicsSubscription = data.subscribeToMore({
+      document: topicsOfLeanCoffeeSubscription,
+      variables: { id: leanCoffeeId },
+      updateQuery: (previousState, {subscriptionData}) => {
+        if (!subscriptionData.data) {
+            return previousState
+        }
+
+        const changedTopic = subscriptionData.data.Topic.node
+
+        return Object.assign({}, {
+          allTopics: previousState.allTopics.map(topic =>
+            topic.id === changedTopic.id ? changedTopic : topic
+          )
+        })
+      },
+      onError: (err) => console.error(err),
+    })
+  }
+
   handleStartDiscussion = () => {
-    const { leanCoffeeId, topics, updateTopicState } = this.props
+    const { leanCoffeeId, data: { allTopics: topics }, updateTopicState, userId } = this.props
     const upcomingTopics = topics
       .filter(topic => topic.state === 'OPEN')
       .sort((a,b) => (b._votesMeta.count - a._votesMeta.count))
 
-    updateTopicState(upcomingTopics[0].id, 'CURRENT', leanCoffeeId)
+    updateTopicState(upcomingTopics[0].id, 'CURRENT', leanCoffeeId, userId)
   }
 
   handleClose = (id) => {
-    const { leanCoffeeId, updateTopicState } = this.props
+    const { leanCoffeeId, updateTopicState, userId } = this.props
 
-    updateTopicState(id, 'CLOSED', leanCoffeeId)
+    updateTopicState(id, 'CLOSED', leanCoffeeId, userId)
   }
 
   renderCurrentTopic = (currentTopic) => (
@@ -88,7 +111,7 @@ class Discussion extends Component {
   )
 
   render() {
-    const { loading, topics } = this.props
+    const { data: { loading, allTopics: topics } } = this.props
 
     if (loading) { return <div>loading...</div> }
 
@@ -121,26 +144,34 @@ Discussion.propTypes = {
   leanCoffeeId: PropTypes.string.isRequired,
   leanCoffeeUserId: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
-  topics: PropTypes.array,
   userId: PropTypes.string.isRequired,
   updateTopicState: PropTypes.func.isRequired,
 }
 
-export default graphql(updateTopicState, {
-  props: ({ mutate }) => ({
-    updateTopicState: (id, state, leanCoffeeId) => mutate({
-      refetchQueries: [
-        {
-          query: getLeanCoffee,
-          variables: {
-            id: leanCoffeeId,
-          }
-        }
-      ],
-      variables: {
-        id,
-        state,
-      }
+export default compose(
+  graphql(getTopicsOfLeanCoffee, {
+    options: ({ leanCoffeeId }) => ({
+      fetchPolicy: 'network-only',
+      variables: { id: leanCoffeeId },
     })
-  })
-})(Discussion)
+  }),
+  graphql(updateTopicState, {
+    props: ({ mutate }) => ({
+      updateTopicState: (id, state, leanCoffeeId, userId) => mutate({
+        refetchQueries: [
+          {
+            query: getLeanCoffee,
+            variables: {
+              leanCoffeeId,
+              userId,
+            }
+          }
+        ],
+        variables: {
+          id,
+          state,
+        }
+      })
+    })
+  }),
+)(Discussion)

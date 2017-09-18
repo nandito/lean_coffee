@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
 import { Button, Icon, Label, List } from 'semantic-ui-react'
 import CreateTopicForm from '../../../../topic/create/CreateForm'
 import { TOPIC_STATE_ICONS, TOPIC_STATE_COLORS } from '../../../../topic/constants'
-import { getLeanCoffees, deleteTopic } from '../../../../../graphql'
+import { deleteTopic, getTopicsOfLeanCoffee, topicsOfLeanCoffeeSubscription } from '../../../../../graphql'
 
 class Collection extends Component {
   constructor(props) {
@@ -13,6 +13,35 @@ class Collection extends Component {
     this.state = {
       addTopicOpen: false,
     }
+  }
+
+  componentDidMount() {
+    const { data, leanCoffeeId } = this.props
+
+    this.createTopicsSubscription = data.subscribeToMore({
+      document: topicsOfLeanCoffeeSubscription,
+      variables: { id: leanCoffeeId },
+      updateQuery: (previousState, {subscriptionData}) => {
+        if (!subscriptionData.data) {
+            return previousState
+        }
+
+        const newTopic = subscriptionData.data.Topic.node
+
+        if (!newTopic) {
+          const removedTopicId = subscriptionData.data.Topic.previousValues.id
+
+          return Object.assign({}, previousState, {
+            allTopics: previousState.allTopics.filter(topic => topic.id !== removedTopicId)
+          })
+        }
+
+        return Object.assign({}, previousState, {
+          allTopics: [...previousState.allTopics, newTopic]
+        })
+      },
+      onError: (err) => console.error(err),
+    })
   }
 
   handleAddTopicOpen = () => {
@@ -27,8 +56,8 @@ class Collection extends Component {
     })
   }
 
-  handleRemove = (id) => {
-    this.props.deleteTopic(id)
+  handleRemove = (topicId) => {
+    this.props.deleteTopic(this.props.leanCoffeeId, topicId)
   }
 
   renderRemoveButton = (topicId) => (
@@ -46,9 +75,11 @@ class Collection extends Component {
   )
 
   render() {
-    const { leanCoffeeId, leanCoffeeUserId, loading, topics, userId } = this.props
+    const { leanCoffeeId, leanCoffeeUserId, userId } = this.props
 
-    if (loading) { return <div>loading...</div> }
+    if (this.props.data.loading) { return <div>loading...</div> }
+
+    const topics = this.props.data.allTopics
 
     return (
       <div>
@@ -94,20 +125,30 @@ class Collection extends Component {
 }
 
 Collection.propTypes = {
+  data: PropTypes.object.isRequired,
   leanCoffeeId: PropTypes.string.isRequired,
   leanCoffeeUserId: PropTypes.string.isRequired,
-  loading: PropTypes.bool.isRequired,
-  topics: PropTypes.array,
   userId: PropTypes.string.isRequired,
 }
 
-export default graphql(deleteTopic, {
-  props: ({ mutate }) => ({
-    deleteTopic: (id) => mutate({
-      refetchQueries: [
-        { query: getLeanCoffees }
-      ],
-      variables: { id }
+export default compose(
+  graphql(getTopicsOfLeanCoffee, {
+    options: ({ leanCoffeeId }) => ({
+      fetchPolicy: 'network-only',
+      variables: { id: leanCoffeeId },
+    })
+  }),
+  graphql(deleteTopic, {
+    props: ({ mutate }) => ({
+      deleteTopic: (leanCoffeeId, topicId) => mutate({
+        refetchQueries: [
+          {
+            query: getTopicsOfLeanCoffee,
+            variables: { id: leanCoffeeId },
+          }
+        ],
+        variables: { id: topicId }
+      })
     })
   })
-})(Collection)
+)(Collection)

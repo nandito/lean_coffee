@@ -5,10 +5,11 @@ export {
 } from './participant'
 
 export {
+  createLeanCoffee,
   deleteLeanCoffee,
   getLeanCoffee,
   getLeanCoffees,
-  createLeanCoffee,
+  leanCoffeeStateSubscription,
   updateLeanCoffeeState,
 } from './coffees'
 
@@ -16,6 +17,8 @@ export {
   createTopic,
   deleteTopic,
   getTopics,
+  getTopicsOfLeanCoffee,
+  topicsOfLeanCoffeeSubscription,
   updateTopicState,
 } from './topics'
 
@@ -25,5 +28,6 @@ export {
 } from './user'
 
 export {
-  createVote
+  createVote,
+  votesOfLeanCoffeeSubscription,
 } from './vote'

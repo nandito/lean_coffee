@@ -25,31 +25,24 @@ export const createLeanCoffee = gql`
 `
 
 export const getLeanCoffee = gql`
-  query LeanCoffee($id: ID!) {
-    LeanCoffee(id: $id) {
+  query LeanCoffee($leanCoffeeId: ID!, $userId: ID!) {
+    LeanCoffee(id: $leanCoffeeId) {
       id
       user {
         id
         name
-        votesOnThisCoffee: _votesMeta(filter:{ leanCoffee:{ id: $id } }){
-          count
-        }
       },
       createdAt
       state
-      topics {
-        id
-        name
-        user {
-          id
-          name
-        }
-        state
-        _votesMeta {
-          count
-        }
-      }
       votesPerUser
+      _votesMeta(filter:
+        {
+          leanCoffee: { id: $leanCoffeeId },
+          user: { id: $userId },
+        }
+      ){
+        count
+      }
     }
     user {
       id
@@ -71,6 +64,19 @@ export const deleteLeanCoffee = gql`
   mutation deleteLeanCoffee($id: ID!) {
     deleteLeanCoffee(id: $id) {
       id
+    }
+  }
+`
+
+export const leanCoffeeStateSubscription = gql`
+  subscription stateChangeSubscription($id: ID!) {
+    LeanCoffee(filter: {
+      mutation_in: [UPDATED, CREATED, DELETED],
+      node: { id: $id }
+    }) {
+      node {
+        state
+      }
     }
   }
 `

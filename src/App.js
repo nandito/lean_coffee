@@ -16,6 +16,7 @@ class App extends Component {
     }
 
     const isAuthenticated = (this.props.data.user)
+    const userId = isAuthenticated && this.props.data.user.id
 
     return (
       <Container>
@@ -27,7 +28,7 @@ class App extends Component {
 
           <PrivateRoute isAuthenticated={isAuthenticated} exact path="/participants" component={ListParticipants} />
           <PrivateRoute isAuthenticated={isAuthenticated} exact path="/coffees" component={ListLeanCoffees}/>
-          <PrivateRoute isAuthenticated={isAuthenticated} exact path="/coffees/:id" component={LeanCoffeeDetails}/>
+          <PrivateRoute isAuthenticated={isAuthenticated} exact path="/coffees/:id" component={LeanCoffeeDetails} userId={userId} />
           <PrivateRoute isAuthenticated={isAuthenticated} exact path="/topics" component={ListTopics}/>
         </Switch>
       </Container>
@@ -35,10 +36,10 @@ class App extends Component {
   }
 }
 
-const PrivateRoute = ({ component: Component, isAuthenticated, ...rest }) => (
+const PrivateRoute = ({ component: Component, isAuthenticated, userId, ...rest }) => (
   <Route {...rest} render={props => (
     (isAuthenticated)
-    ? <Component {...props}/>
+    ? <Component userId={userId} {...props}/>
     : <Redirect to={{
         pathname: '/',
         state: { from: props.location },
