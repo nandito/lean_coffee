@@ -1,11 +1,16 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
 import { graphql } from 'react-apollo'
 import { Button, Form, } from 'semantic-ui-react'
 import { createUser, getUser } from '../../graphql'
 
-class CreateUser extends Component {
+interface CreateUserProps {
+  createUser: any;
+  data: any;
+  history: any;
+}
+
+class CreateUser extends React.Component<CreateUserProps, any> {
   constructor(props) {
     super(props)
 
@@ -60,11 +65,6 @@ class CreateUser extends Component {
       </Form>
     )
   }
-}
-
-CreateUser.propTypes = {
-  createUser: PropTypes.func.isRequired,
-  data: PropTypes.object.isRequired,
 }
 
 export default graphql(createUser, {name: 'createUser'})(
