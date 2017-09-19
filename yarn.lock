@@ -6,6 +6,16 @@
   version "2.0.40"
   resolved "https://registry.yarnpkg.com/@types/async/-/async-2.0.40.tgz#ac02de68e66c004a61b7cb16df8b1db3a254cca9"
 
+"@types/auth0-js@*":
+  version "8.6.3"
+  resolved "https://registry.yarnpkg.com/@types/auth0-js/-/auth0-js-8.6.3.tgz#7ca163c62a8fb681e2caea13e4a257234ef8c9ac"
+
+"@types/auth0-lock@^10.16.1":
+  version "10.16.1"
+  resolved "https://registry.yarnpkg.com/@types/auth0-lock/-/auth0-lock-10.16.1.tgz#cc26c1c6ede334cd6842ea06a21260f28fa88c82"
+  dependencies:
+    "@types/auth0-js" "*"
+
 "@types/graphql@^0.9.0", "@types/graphql@^0.9.1":
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-0.9.1.tgz#b04ebe84bc997cc60dbea2ed4d0d4342c737f99d"

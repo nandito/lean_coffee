@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import * as React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { Container } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
@@ -9,7 +9,7 @@ import { getUser } from './graphql'
 export const clientId = 'tdJNe4V3XWxqNAQYhrK0FbrDzW3jbPcq'
 export const domain='lean-coffee.eu.auth0.com'
 
-class App extends Component {
+class App extends React.Component<any, any> {
   render () {
     if (this.props.data.loading) {
       return <Loading />
@@ -36,7 +36,15 @@ class App extends Component {
   }
 }
 
-const PrivateRoute = ({ component: Component, isAuthenticated, userId, ...rest }) => (
+interface PrivateRouteProps {
+  isAuthenticated: boolean;
+  exact?: boolean;
+  path: string;
+  component: any;
+  userId?: any;
+}
+
+const PrivateRoute = ({ component: Component, isAuthenticated, userId, ...rest }: PrivateRouteProps) => (
   <Route {...rest} render={props => (
     (isAuthenticated)
     ? <Component userId={userId} {...props}/>

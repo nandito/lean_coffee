@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
+import * as React from 'react'
 import { withRouter } from 'react-router'
 import { Menu } from 'semantic-ui-react'
 import AuthControl from './AuthControl'
 
-class Navbar extends Component {
+class Navbar extends React.Component<any, any> {
   state = { activeItem: 'participants' }
 
   handleItemClick = (e, { name }) => {
