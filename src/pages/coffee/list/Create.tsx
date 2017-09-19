@@ -1,11 +1,9 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
 import { Button, Icon, Modal } from 'semantic-ui-react'
-import { compose, graphql } from 'react-apollo'
+import { compose, graphql, QueryProps } from 'react-apollo'
 import { createLeanCoffee, getLeanCoffees, getUser } from '../../../graphql'
 
-// TODO: split component: get the list of participants only when the modal is opened
-class CreateLeanCoffee extends Component {
+class CreateLeanCoffee extends React.Component<any, any> {
   constructor(props) {
     super(props)
 
@@ -70,15 +68,20 @@ class CreateLeanCoffee extends Component {
   }
 }
 
-CreateLeanCoffee.propTypes = {
-  data: PropTypes.object.isRequired,
-  submit: PropTypes.func.isRequired,
+type LeanCoffee = {
+  id: string;
 }
+
+type Response = {
+  leanCoffee: LeanCoffee;
+}
+
+type WrappedProps = Response & QueryProps;
 
 export default compose(
   graphql(getUser),
-  graphql(createLeanCoffee, {
-    props: ({ mutate }) => ({
+  graphql<Response, any, WrappedProps>(createLeanCoffee, {
+    props: ({ mutate }: any) => ({
       submit: ({ userId }) => mutate(
         {
           refetchQueries: [{ query: getLeanCoffees }],

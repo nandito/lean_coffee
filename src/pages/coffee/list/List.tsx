@@ -1,7 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
 import { graphql } from 'react-apollo'
-import moment from 'moment'
+import * as moment from 'moment'
 import { Card, Dimmer, Header, Label, Icon, Loader, Segment } from 'semantic-ui-react'
 import CreateLeanCoffee from './Create'
 import { COFFEE_STATE_NAMES, COFFEE_STATE_COLORS } from '../constants'
@@ -62,8 +61,8 @@ const ListLeanCoffees = ({ data }) => {
   )
 }
 
-ListLeanCoffees.propTypes = {
-  data: PropTypes.object.isRequired,
-}
+// ListLeanCoffees.propTypes = {
+//   data: PropTypes.object.isRequired,
+// }
 
 export default graphql(getLeanCoffees, { options: {fetchPolicy: 'network-only'}})(ListLeanCoffees)
