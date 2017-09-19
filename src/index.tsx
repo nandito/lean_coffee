@@ -1,5 +1,5 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 // import registerServiceWorker from './registerServiceWorker'
@@ -44,6 +44,12 @@ const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
 const client = new ApolloClient({
   networkInterface: networkInterfaceWithSubscriptions,
 })
+
+declare global {
+    interface Window { __REDUX_DEVTOOLS_EXTENSION__: any; }
+}
+
+window.__REDUX_DEVTOOLS_EXTENSION__ = window.__REDUX_DEVTOOLS_EXTENSION__ || {};
 
 const store = createStore(
   combineReducers({
