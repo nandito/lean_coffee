@@ -29,7 +29,7 @@ class App extends React.Component<DefaultChildProps<AppProps, Response>, {}> {
       return <Loading />
     }
 
-    const isAuthenticated = typeof user !== 'undefined'
+    const isAuthenticated = typeof user !== 'undefined' && user !== null
     const userId = isAuthenticated && user.id
 
     return (
