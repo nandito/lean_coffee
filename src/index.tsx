@@ -23,7 +23,7 @@ const networkInterface = createNetworkInterface({
 })
 
 networkInterface.use([{
-  applyMiddleware (req, next) {
+  applyMiddleware(req: any, next: Function) { // tslint:disable-line no-any
     if (!req.options.headers) {
       req.options.headers = {}
     }
@@ -46,7 +46,7 @@ const client = new ApolloClient({
 })
 
 declare global {
-    interface Window { __REDUX_DEVTOOLS_EXTENSION__: any; }
+  interface Window { __REDUX_DEVTOOLS_EXTENSION__: Function; }
 }
 
 window.__REDUX_DEVTOOLS_EXTENSION__ = window.__REDUX_DEVTOOLS_EXTENSION__ || {};
