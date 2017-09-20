@@ -19,23 +19,32 @@ const steps = [
   },
 ]
 
+export interface Props {
+  location: {
+    state?: undefined | {
+      from: {
+        pathname: string
+      }
+    }
+  };
+}
 
-const Home = ({ location }) => (
+const Home = ({ location }: Props) => (
   <div>
-    <Header as='h2' icon textAlign='center'>
+    <Header as='h2' textAlign='center'>
       <Header.Content>
         Lean Coffee home
       </Header.Content>
     </Header>
 
     { location.state && location.state.from &&
-      <Message negative>
+      <Message negative={true}>
         <Message.Header>Permission denied</Message.Header>
         <p>You have to log in to access '{location.state.from.pathname}' page</p>
       </Message>
     }
 
-    <Step.Group fluid items={steps} />
+    <Step.Group fluid={true} items={steps} />
 
   </div>
 )
