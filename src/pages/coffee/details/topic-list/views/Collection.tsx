@@ -1,12 +1,14 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+// import PropTypes from 'prop-types'
 import { graphql, compose } from 'react-apollo'
 import { Button, Icon, Label, List } from 'semantic-ui-react'
 import CreateTopicForm from '../../../../topic/create/CreateForm'
 import { TOPIC_STATE_ICONS, TOPIC_STATE_COLORS } from '../../../../topic/constants'
 import { deleteTopic, getTopicsOfLeanCoffee, topicsOfLeanCoffeeSubscription } from '../../../../../graphql'
 
-class Collection extends Component {
+class Collection extends React.Component<any, any> {
+  private createTopicsSubscription : any
+
   constructor(props) {
     super(props)
 
@@ -124,22 +126,22 @@ class Collection extends Component {
   }
 }
 
-Collection.propTypes = {
-  data: PropTypes.object.isRequired,
-  leanCoffeeId: PropTypes.string.isRequired,
-  leanCoffeeUserId: PropTypes.string.isRequired,
-  userId: PropTypes.string.isRequired,
-}
+// Collection.propTypes = {
+//   data: PropTypes.object.isRequired,
+//   leanCoffeeId: PropTypes.string.isRequired,
+//   leanCoffeeUserId: PropTypes.string.isRequired,
+//   userId: PropTypes.string.isRequired,
+// }
 
 export default compose(
   graphql(getTopicsOfLeanCoffee, {
-    options: ({ leanCoffeeId }) => ({
+    options: ({ leanCoffeeId }: any) => ({
       fetchPolicy: 'network-only',
       variables: { id: leanCoffeeId },
     })
   }),
   graphql(deleteTopic, {
-    props: ({ mutate }) => ({
+    props: ({ mutate }: any) => ({
       deleteTopic: (leanCoffeeId, topicId) => mutate({
         refetchQueries: [
           {

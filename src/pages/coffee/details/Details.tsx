@@ -1,15 +1,17 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+// import PropTypes from 'prop-types'
 import { Button, Header, Icon, Item, Label, List, Message, Segment } from 'semantic-ui-react'
 import { compose, graphql } from 'react-apollo'
-import moment from 'moment'
+import * as moment from 'moment'
 import ChangeStateForm from './ChangeStateForm'
 import TopicList from './topic-list/TopicList'
 import { COFFEE_STATE_NAMES, COFFEE_STATE_COLORS } from '../constants'
 import { Loading } from '../../../components'
 import { deleteLeanCoffee, getLeanCoffee, getLeanCoffees, leanCoffeeStateSubscription, updateLeanCoffeeState } from '../../../graphql'
 
-class LeanCoffeeDetails extends Component {
+class LeanCoffeeDetails extends React.Component<any, any> {
+  private createLeanCoffeeSubscription: any
+
   constructor(props) {
     super(props)
 
@@ -181,15 +183,15 @@ class LeanCoffeeDetails extends Component {
     )
   }
 }
-
-LeanCoffeeDetails.propTypes = {
-  data: PropTypes.object.isRequired,
-  deleteLeanCoffee: PropTypes.func.isRequired,
-}
+//
+// LeanCoffeeDetails.propTypes = {
+//   data: PropTypes.object.isRequired,
+//   deleteLeanCoffee: PropTypes.func.isRequired,
+// }
 
 export default compose(
   graphql(getLeanCoffee, {
-    options: ({ match: { params: { id } }, userId }) => ({
+    options: ({ match: { params: { id } }, userId }: any) => ({
       fetchPolicy: 'network-only',
       variables: {
         leanCoffeeId: id,
@@ -198,7 +200,7 @@ export default compose(
     })
   }),
   graphql(deleteLeanCoffee, {
-    props: ({ mutate }) => ({
+    props: ({ mutate }: any) => ({
       deleteLeanCoffee: (id) => mutate({
         refetchQueries: [
           { query: getLeanCoffees }
@@ -208,7 +210,7 @@ export default compose(
     })
   }),
   graphql(updateLeanCoffeeState, {
-    props: ({ mutate }) => ({
+    props: ({ mutate }: any) => ({
       updateLeanCoffeeState: (id, state, userId) => mutate({
         refetchQueries: [
           {

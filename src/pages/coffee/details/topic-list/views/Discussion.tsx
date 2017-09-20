@@ -1,11 +1,13 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+// import PropTypes from 'prop-types'
 import { compose, graphql } from 'react-apollo'
 import { Button, Card, Divider, Header, List } from 'semantic-ui-react'
 import { TopicFeed } from '../../../../../components'
 import { getLeanCoffee, getTopicsOfLeanCoffee, topicsOfLeanCoffeeSubscription, updateTopicState } from '../../../../../graphql'
 
-class Discussion extends Component {
+class Discussion extends React.Component<any, any> {
+  private createTopicsSubscription: any
+
   componentDidMount() {
     const { data, leanCoffeeId } = this.props
 
@@ -140,23 +142,23 @@ class Discussion extends Component {
   }
 }
 
-Discussion.propTypes = {
-  leanCoffeeId: PropTypes.string.isRequired,
-  leanCoffeeUserId: PropTypes.string.isRequired,
-  loading: PropTypes.bool.isRequired,
-  userId: PropTypes.string.isRequired,
-  updateTopicState: PropTypes.func.isRequired,
-}
+// Discussion.propTypes = {
+//   leanCoffeeId: PropTypes.string.isRequired,
+//   leanCoffeeUserId: PropTypes.string.isRequired,
+//   loading: PropTypes.bool.isRequired,
+//   userId: PropTypes.string.isRequired,
+//   updateTopicState: PropTypes.func.isRequired,
+// }
 
 export default compose(
   graphql(getTopicsOfLeanCoffee, {
-    options: ({ leanCoffeeId }) => ({
+    options: ({ leanCoffeeId }: any) => ({
       fetchPolicy: 'network-only',
       variables: { id: leanCoffeeId },
     })
   }),
   graphql(updateTopicState, {
-    props: ({ mutate }) => ({
+    props: ({ mutate }: any) => ({
       updateTopicState: (id, state, leanCoffeeId, userId) => mutate({
         refetchQueries: [
           {

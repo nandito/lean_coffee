@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+// import PropTypes from 'prop-types'
 import { graphql } from 'react-apollo'
 import { Button, Form, Select, } from 'semantic-ui-react'
 import { TOPIC_STATE_NAMES } from '../constants'
 import { createTopic, getTopicsOfLeanCoffee, getTopics } from '../../../graphql'
 
-class CreateTopicForm extends Component {
+class CreateTopicForm extends React.Component<any, any> {
   constructor(props) {
     super(props)
 
@@ -65,14 +65,14 @@ class CreateTopicForm extends Component {
   }
 }
 
-CreateTopicForm.propTypes = {
-  removeForm: PropTypes.func,
-  leanCoffeeId: PropTypes.string,
-  submit: PropTypes.func.isRequired
-}
+// CreateTopicForm.propTypes = {
+//   removeForm: PropTypes.func,
+//   leanCoffeeId: PropTypes.string,
+//   submit: PropTypes.func.isRequired
+// }
 
-export default graphql(createTopic, {
-  props: ({ mutate }) => ({
+export default graphql<any, any>(createTopic, {
+  props: ({ mutate }: any) => ({
     submit: (leanCoffeeId, name, state, userId) => {
       if (leanCoffeeId) {
         return mutate({

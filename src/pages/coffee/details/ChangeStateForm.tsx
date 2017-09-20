@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+// import PropTypes from 'prop-types'
 import { Button, Form, Select } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
 import { COFFEE_STATE_NAMES } from '../constants'
 import { getLeanCoffee, updateLeanCoffeeState } from '../../../graphql'
 
-class ChangeStateForm extends Component {
+class ChangeStateForm extends React.Component<any, any> {
   constructor(props) {
     super(props)
 
@@ -53,16 +53,16 @@ class ChangeStateForm extends Component {
   }
 }
 
-ChangeStateForm.propTypes = {
-  hideForm: PropTypes.func.isRequired,
-  id: PropTypes.string.isRequired,
-  state: PropTypes.string.isRequired,
-  submit: PropTypes.func.isRequired,
-  userId: PropTypes.string.isRequired,
-}
+// ChangeStateForm.propTypes = {
+//   hideForm: PropTypes.func.isRequired,
+//   id: PropTypes.string.isRequired,
+//   state: PropTypes.string.isRequired,
+//   submit: PropTypes.func.isRequired,
+//   userId: PropTypes.string.isRequired,
+// }
 
-export default graphql(updateLeanCoffeeState, {
-  props: ({ mutate }) => ({
+export default graphql<any, any>(updateLeanCoffeeState, {
+  props: ({ mutate }: any) => ({
     submit: ({ id, state, userId }) => mutate(
       {
         refetchQueries: [{
