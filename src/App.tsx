@@ -1,35 +1,70 @@
 import * as React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { Container } from 'semantic-ui-react'
-import { graphql } from 'react-apollo'
+import { DefaultChildProps, graphql } from 'react-apollo'
 import { CreateUser, Home, LeanCoffeeDetails, ListLeanCoffees, ListParticipants, ListTopics } from './pages'
 import { Loading, Navbar } from './components'
 import { getUser } from './graphql'
 
 export const clientId = 'tdJNe4V3XWxqNAQYhrK0FbrDzW3jbPcq'
-export const domain='lean-coffee.eu.auth0.com'
+export const domain = 'lean-coffee.eu.auth0.com'
 
-class App extends React.Component<any, any> {
+type User = {
+  id: string;
+  name: string;
+}
+
+interface AppProps {
+  data: {
+    loading: boolean;
+    user: User;
+  }
+}
+
+class App extends React.Component<DefaultChildProps<AppProps, Response>, {}> {
   render () {
-    if (this.props.data.loading) {
+    const { loading, user } = this.props.data
+
+    if (loading) {
       return <Loading />
     }
 
-    const isAuthenticated = (this.props.data.user)
-    const userId = isAuthenticated && this.props.data.user.id
+    const isAuthenticated = typeof user !== 'undefined'
+    const userId = isAuthenticated && user.id
 
     return (
       <Container>
         <Navbar data={this.props.data} />
 
         <Switch>
-          <Route exact path="/" component={Home}/>
-          <Route exact path="/signup" component={CreateUser}/>
+          <Route exact={true} path='/' component={Home}/>
+          <Route exact={true} path='/signup' component={CreateUser}/>
 
-          <PrivateRoute isAuthenticated={isAuthenticated} exact path="/participants" component={ListParticipants} />
-          <PrivateRoute isAuthenticated={isAuthenticated} exact path="/coffees" component={ListLeanCoffees}/>
-          <PrivateRoute isAuthenticated={isAuthenticated} exact path="/coffees/:id" component={LeanCoffeeDetails} userId={userId} />
-          <PrivateRoute isAuthenticated={isAuthenticated} exact path="/topics" component={ListTopics}/>
+          <PrivateRoute
+            component={ListParticipants}
+            exact={true}
+            isAuthenticated={isAuthenticated}
+            path='/participants'
+          />
+          <PrivateRoute
+            component={ListLeanCoffees}
+            exact={true}
+            isAuthenticated={isAuthenticated}
+            path='/coffees'
+          />
+          <PrivateRoute
+            component={LeanCoffeeDetails}
+            exact={true}
+            isAuthenticated={isAuthenticated}
+            path='/coffees/:id'
+            userId={userId}
+          />
+          <PrivateRoute
+            component={ListTopics}
+            exact={true}
+            isAuthenticated={isAuthenticated}
+            path='/topics'
+          />
         </Switch>
       </Container>
     )
@@ -40,20 +75,27 @@ interface PrivateRouteProps {
   isAuthenticated: boolean;
   exact?: boolean;
   path: string;
-  component: any;
-  userId?: any;
+  component: new() => React.Component<{}, {}>;
+  userId?: string | boolean;
 }
 
 const PrivateRoute = ({ component: Component, isAuthenticated, userId, ...rest }: PrivateRouteProps) => (
-  <Route {...rest} render={props => (
-    (isAuthenticated)
-    ? <Component userId={userId} {...props}/>
-    : <Redirect to={{
-        pathname: '/',
-        state: { from: props.location },
-      }}/>
-    )
-  }/>
+  <Route
+    {...rest}
+    render={props => (
+      (isAuthenticated)
+      ? <Component userId={userId} {...props} />
+      : <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+    )}
+  />
 )
 
-export default graphql(getUser, { options: { fetchPolicy: 'network-only' }})(App)
+type Response = {
+  data: {
+    user: User
+  }
+}
+
+export default graphql<Response>(getUser, {
+  options: { fetchPolicy: 'network-only' }
+})(App)
