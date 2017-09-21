@@ -1,10 +1,25 @@
 import * as React from 'react'
 import { Button, Icon, Modal } from 'semantic-ui-react'
-import { compose, graphql, QueryProps } from 'react-apollo'
+import { compose, DefaultChildProps, graphql } from 'react-apollo'
 import { createLeanCoffee, getLeanCoffees, getUser } from '../../../graphql'
+import { getUserQuery } from '../../../schema'
 
-class CreateLeanCoffee extends React.Component<any, any> {
-  constructor(props) {
+interface CreateLeanCoffeeProps {
+  data: {
+    loading: boolean;
+    user: getUserQuery['user']
+  };
+  submit: Function
+}
+
+type State = {
+  modalOpen: boolean;
+}
+
+type WrappedProps = DefaultChildProps<CreateLeanCoffeeProps, getUserQuery>
+
+class CreateLeanCoffee extends React.Component<WrappedProps, State> {
+  constructor(props: WrappedProps) {
     super(props)
 
     this.state = {
@@ -23,30 +38,31 @@ class CreateLeanCoffee extends React.Component<any, any> {
   handleSubmit = () => {
     const { submit, data: { user } } = this.props
 
-    submit({ userId: user.id })
-    this.setState({
-      modalOpen: false,
-    })
+    if (user && user.id) {
+      submit({ userId: user.id })
+      this.setState({ modalOpen: false })
+    }
   }
 
   render() {
     const { data } = this.props
 
-    if (data.loading) return null
+    if (data.loading) {
+      return null
+    }
 
     return (
       <Modal
         trigger={
-          <Button onClick={this.handleOpen} primary >
+          <Button onClick={this.handleOpen} primary={true} >
             <Icon name='plus' /> Start new session
-          </Button>
-        }
-        closeIcon
+          </Button>}
+        closeIcon={true}
         open={this.state.modalOpen}
         onClose={this.handleClose}
       >
         <Modal.Header>
-          <Icon name='coffee' circular /> Add Lean Coffee
+          <Icon name='coffee' circular={true} /> Add Lean Coffee
         </Modal.Header>
 
         <Modal.Content>
@@ -68,29 +84,23 @@ class CreateLeanCoffee extends React.Component<any, any> {
   }
 }
 
-type LeanCoffee = {
-  id: string;
-}
-
-type Response = {
-  leanCoffee: LeanCoffee;
-}
-
-type WrappedProps = Response & QueryProps;
-
 export default compose(
-  graphql(getUser),
-  graphql<Response, any, WrappedProps>(createLeanCoffee, {
-    props: ({ mutate }: any) => ({
-      submit: ({ userId }) => mutate(
-        {
-          refetchQueries: [{ query: getLeanCoffees }],
-          variables: {
-            userId,
-            state: 'TOPIC_COLLECTION'
-          }
+  graphql<getUserQuery>(getUser),
+  graphql(createLeanCoffee, {
+    props: ({ mutate }) => ({
+      submit: ({ userId }) => {
+        if (mutate) {
+          mutate(
+            {
+              refetchQueries: [{ query: getLeanCoffees }],
+              variables: {
+                userId,
+                state: 'TOPIC_COLLECTION'
+              }
+            }
+          )
         }
-      ),
+      },
     }),
   })
 )(CreateLeanCoffee)
