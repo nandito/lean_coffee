@@ -12,7 +12,7 @@
     "auth0-lock": "^10.20.0",
     "prop-types": "^15.5.10",
     "react": "^15.6.0",
-    "react-apollo": "^1.4.2",
+    "react-apollo": "^1.4.15",
     "react-dom": "^15.6.0",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.1.1",

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Button, Icon, Modal } from 'semantic-ui-react'
-import { compose, DefaultChildProps, graphql } from 'react-apollo'
+import { compose, ChildProps, graphql } from 'react-apollo'
 import { createLeanCoffee, getLeanCoffees, getUser } from '../../../graphql'
 import { getUserQuery } from '../../../schema'
 
@@ -16,7 +16,7 @@ type State = {
   modalOpen: boolean;
 }
 
-type WrappedProps = DefaultChildProps<CreateLeanCoffeeProps, getUserQuery>
+type WrappedProps = ChildProps<CreateLeanCoffeeProps, getUserQuery>
 
 class CreateLeanCoffee extends React.Component<WrappedProps, State> {
   constructor(props: WrappedProps) {

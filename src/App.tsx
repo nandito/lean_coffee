@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { Container } from 'semantic-ui-react'
-import { DefaultChildProps, graphql } from 'react-apollo'
+import { ChildProps, graphql } from 'react-apollo'
 import { CreateUser, Home, LeanCoffeeDetails, ListLeanCoffees, ListParticipants, ListTopics } from './pages'
 import { Loading, Navbar } from './components'
 import { getUser } from './graphql'
@@ -17,7 +17,7 @@ interface AppProps {
   }
 }
 
-class App extends React.Component<DefaultChildProps<AppProps, getUserQuery>, {}> {
+class App extends React.Component<ChildProps<AppProps, getUserQuery>, {}> {
   render () {
     const { loading, user } = this.props.data
 

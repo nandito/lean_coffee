@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { DefaultChildProps, graphql } from 'react-apollo'
+import { ChildProps, graphql } from 'react-apollo'
 import * as moment from 'moment'
 import { Card, Header, Icon, Label, Segment } from 'semantic-ui-react'
 import { Loading } from '../../../components'
@@ -16,7 +16,7 @@ export interface Props {
   };
 }
 
-const ListLeanCoffees = ({data: {loading, error, allLeanCoffees}}: DefaultChildProps<Props, getLeanCoffeesQuery>) => {
+const ListLeanCoffees = ({data: {loading, error, allLeanCoffees}}: ChildProps<Props, getLeanCoffeesQuery>) => {
   if (loading) {
     return <Loading />
   }
