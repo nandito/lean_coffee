@@ -5,23 +5,19 @@ import { DefaultChildProps, graphql } from 'react-apollo'
 import { CreateUser, Home, LeanCoffeeDetails, ListLeanCoffees, ListParticipants, ListTopics } from './pages'
 import { Loading, Navbar } from './components'
 import { getUser } from './graphql'
+import { getUserQuery } from './schema'
 
 export const clientId = 'tdJNe4V3XWxqNAQYhrK0FbrDzW3jbPcq'
 export const domain = 'lean-coffee.eu.auth0.com'
 
-type User = {
-  id: string;
-  name: string;
-}
-
 interface AppProps {
   data: {
     loading: boolean;
-    user: User;
+    user: getUserQuery['user'];
   }
 }
 
-class App extends React.Component<DefaultChildProps<AppProps, Response>, {}> {
+class App extends React.Component<DefaultChildProps<AppProps, getUserQuery>, {}> {
   render () {
     const { loading, user } = this.props.data
 
@@ -29,8 +25,8 @@ class App extends React.Component<DefaultChildProps<AppProps, Response>, {}> {
       return <Loading />
     }
 
-    const isAuthenticated = typeof user !== 'undefined' && user !== null
-    const userId = isAuthenticated && user.id
+    const isAuthenticated: boolean = typeof user !== 'undefined' && user !== null
+    const userId: string | undefined = user && user.id || undefined
 
     return (
       <Container>
@@ -90,12 +86,6 @@ const PrivateRoute = ({ component: Component, isAuthenticated, userId, ...rest }
   />
 )
 
-type Response = {
-  data: {
-    user: User
-  }
-}
-
-export default graphql<Response>(getUser, {
+export default graphql<getUserQuery>(getUser, {
   options: { fetchPolicy: 'network-only' }
 })(App)

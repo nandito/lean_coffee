@@ -234,7 +234,7 @@ export type topicsOfLeanCoffeeSubscriptionSubscription = {
   } | null,
 };
 
-export type userQueryQuery = {
+export type getUserQuery = {
   user:  {
     id: string,
     // Name of the user
