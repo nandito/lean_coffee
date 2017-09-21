@@ -1,10 +1,19 @@
 import * as React from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, IInjectedProps } from 'react-router-dom'
 import { Button, Menu } from 'semantic-ui-react'
 import LoginAuth0 from './LoginAuth0'
 import { clientId, domain } from '../../App'
+import { getUserQuery } from '../../schema'
 
-class AuthControl extends React.Component<any, any> {
+interface AuthControlProps {
+  data: {
+    user: getUserQuery['user']
+  }
+}
+
+type Props = IInjectedProps & AuthControlProps
+
+class AuthControl extends React.Component<Props, {}> {
   logout = () => {
     window.localStorage.removeItem('auth0IdToken')
     window.location.reload()
