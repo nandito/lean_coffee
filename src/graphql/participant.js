@@ -1,7 +1,7 @@
 import { gql } from 'react-apollo'
 
 export const getParticipants = gql`
-  query {
+  query getParticipants {
     allParticipants {
       id,
       name,
