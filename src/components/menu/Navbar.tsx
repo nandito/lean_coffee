@@ -1,9 +1,13 @@
 import * as React from 'react'
-import { withRouter } from 'react-router'
+import { withRouter, IInjectedProps } from 'react-router'
 import { Menu } from 'semantic-ui-react'
 import AuthControl from './AuthControl'
 
-class Navbar extends React.Component<any, any> {
+interface State {
+  activeItem: string;
+}
+
+class Navbar extends React.Component<IInjectedProps, State> {
   state = { activeItem: 'participants' }
 
   handleItemClick = (e, { name }) => {
@@ -19,8 +23,8 @@ class Navbar extends React.Component<any, any> {
     const { activeItem } = this.state
 
     return (
-      <Menu stackable>
-        <Menu.Item header>Lean Coffee</Menu.Item>
+      <Menu stackable={true}>
+        <Menu.Item header={true}>Lean Coffee</Menu.Item>
         <Menu.Item
           name='/'
           active={activeItem === '/'}
