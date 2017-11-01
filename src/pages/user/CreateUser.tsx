@@ -1,22 +1,25 @@
 import * as React from 'react'
-import { withRouter, Redirect } from 'react-router-dom'
-import { graphql } from 'react-apollo'
+import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom'
+import { compose, graphql } from 'react-apollo'
 import { Button, Form, } from 'semantic-ui-react'
 import { createUser, getUser } from '../../graphql'
+import { createUserMutation, getUserQuery } from '../../schema'
 
 interface CreateUserProps {
-  createUser: any;
-  data: any;
-  history: any;
+  createUser: createUserMutation;
+  data: {
+    loading: boolean,
+    user: getUserQuery['user'];
+  };
 }
 
-class CreateUser extends React.Component<CreateUserProps, any> {
-  constructor(props) {
-    super(props)
+interface State {
+  name: string
+}
 
-    this.state = {
-      name: '',
-    }
+class CreateUser extends React.Component<CreateUserProps & RouteComponentProps<{}>, State> {
+  state = {
+    name: ''
   }
 
   handleSubmit = (event) => {
@@ -40,7 +43,6 @@ class CreateUser extends React.Component<CreateUserProps, any> {
     this.setState({ name: event.target.value })
   }
 
-
   render () {
     if (this.props.data.loading) {
       return (<div>Loading</div>)
@@ -61,12 +63,13 @@ class CreateUser extends React.Component<CreateUserProps, any> {
           <input placeholder='Name' onChange={this.handleChange} value={this.state.name} />
         </Form.Field>
 
-        { this.state.name && <Button type='submit'>Submit</Button> }
+        {this.state.name && <Button type='submit'>Submit</Button>}
       </Form>
     )
   }
 }
 
-export default graphql(createUser, {name: 'createUser'})(
-  graphql(getUser, { options: {fetchPolicy: 'network-only'}})(withRouter(CreateUser))
-)
+export default compose(
+  graphql(createUser, {name: 'createUser'}),
+  graphql(getUser, { options: {fetchPolicy: 'network-only'}})
+)(withRouter(CreateUser))
