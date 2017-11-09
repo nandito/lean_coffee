@@ -1,34 +1,30 @@
 import * as React from 'react'
-import { withRouter, IInjectedProps } from 'react-router-dom'
+import { withRouter, RouteComponentProps } from 'react-router'
 import { Button, Menu } from 'semantic-ui-react'
 import LoginAuth0 from './LoginAuth0'
 import { clientId, domain } from '../../App'
 import { getUserQuery } from '../../schema'
 
-interface AuthControlProps {
+interface Props {
   data: {
     user: getUserQuery['user']
   }
 }
 
-type Props = IInjectedProps & AuthControlProps
-
-class AuthControl extends React.Component<Props, {}> {
-  logout = () => {
+class AuthControl extends React.Component<Props & RouteComponentProps<{}>, {}> {
+  logout = (): void => {
     window.localStorage.removeItem('auth0IdToken')
     window.location.reload()
   }
 
-  isLoggedIn = () => {
-    return this.props.data.user
-  }
+  isLoggedIn = (): boolean => this.props.data.user !== null
 
   render() {
     return (
       <Menu.Menu position='right'>
         <Menu.Item>
           { this.isLoggedIn()
-            ? <Button onClick={() => this.logout()}>Log out</Button>
+            ? <Button onClick={this.logout}>Log out</Button>
             : <LoginAuth0 clientId={clientId} domain={domain} />
           }
         </Menu.Item>
@@ -37,4 +33,4 @@ class AuthControl extends React.Component<Props, {}> {
   }
 }
 
-export default withRouter(AuthControl)
+export default withRouter<Props>(AuthControl)
