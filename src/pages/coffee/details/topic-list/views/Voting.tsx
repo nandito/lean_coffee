@@ -1,12 +1,23 @@
 import * as React from 'react'
-// import PropTypes from 'prop-types'
-import { compose, graphql } from 'react-apollo'
+import { compose, graphql, QueryProps } from 'react-apollo'
 import { Button, Table } from 'semantic-ui-react'
 import { TOPIC_STATE_NAMES } from '../../../../topic/constants'
 import { createVote, getLeanCoffee, getTopicsOfLeanCoffee, votesOfLeanCoffeeSubscription } from '../../../../../graphql'
+import { createVoteMutation, topicsOfCoffeeQuery } from '../../../../../schema'
 
-class Voting extends React.Component<any, any> {
-  private createVoteSubscription: any
+interface VotingProps {
+  data: QueryProps & topicsOfCoffeeQuery
+  leanCoffeeId: string
+  leanCoffeeUserId: string
+  userId: string
+  votesLeft: number
+  createVoteAndRefetchCoffee(leanCoffeeId: string, userId: string, topicId: string): Promise<{
+    data: createVoteMutation
+  }>
+}
+
+class Voting extends React.Component<VotingProps, {}> {
+  private createVoteSubscription: () => void
 
   componentDidMount() {
     const { data, leanCoffeeId } = this.props
@@ -19,12 +30,12 @@ class Voting extends React.Component<any, any> {
   }
 
   render() {
-    const { createVote, data: { loading, allTopics }, leanCoffeeId, userId, votesLeft } = this.props
+    const { createVoteAndRefetchCoffee, data: { loading, allTopics }, leanCoffeeId, userId, votesLeft } = this.props
 
     if (loading) { return <div>loading...</div> }
 
     return (
-      <Table compact celled selectable>
+      <Table compact={true} celled={true} selectable={true}>
         <Table.Header>
           <Table.Row textAlign='center'>
             <Table.HeaderCell>Name</Table.HeaderCell>
@@ -47,8 +58,8 @@ class Voting extends React.Component<any, any> {
                   content='Vote'
                   disabled={topic.state !== 'OPEN' || votesLeft < 1}
                   icon='hand paper'
-                  onClick={() => createVote(leanCoffeeId, userId, topic.id)}
-                  positive
+                  onClick={() => createVoteAndRefetchCoffee(leanCoffeeId, userId, topic.id)}
+                  positive={true}
                   size='small'
                 />
               </Table.Cell>
@@ -60,39 +71,35 @@ class Voting extends React.Component<any, any> {
   }
 }
 
-// Voting.propTypes = {
-//   createVote: PropTypes.func.isRequired,
-//   leanCoffeeId: PropTypes.string.isRequired,
-//   loading: PropTypes.bool.isRequired,
-//   userId: PropTypes.string.isRequired,
-//   votesLeft: PropTypes.number.isRequired,
-// }
-
 export default compose(
   graphql(getTopicsOfLeanCoffee, {
-    options: ({ leanCoffeeId }: any) => ({
+    options: ({ leanCoffeeId }: { leanCoffeeId: string }) => ({
       fetchPolicy: 'network-only',
       variables: { id: leanCoffeeId },
     })
   }),
   graphql(createVote, {
-    props: ({ mutate }: any) => ({
-      createVote: (leanCoffeeId, userId, topicId) => mutate({
-        refetchQueries: [
-          {
-            query: getLeanCoffee,
-            variables: {
-              leanCoffeeId,
-              userId,
+    props: ({ mutate }) => ({
+      createVoteAndRefetchCoffee: (leanCoffeeId: string, userId: string, topicId: string) => {
+        if (!mutate) { return null }
+        
+        return mutate({
+          refetchQueries: [
+            {
+              query: getLeanCoffee,
+              variables: {
+                leanCoffeeId,
+                userId,
+              }
             }
+          ],
+          variables: {
+            leanCoffeeId,
+            userId,
+            topicId,
           }
-        ],
-        variables: {
-          leanCoffeeId,
-          userId,
-          topicId,
-        }
-      })
+        })
+      }
     })
   })
 )(Voting)
