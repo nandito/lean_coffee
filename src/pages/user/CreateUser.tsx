@@ -1,16 +1,18 @@
 import * as React from 'react'
-import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom'
+import { withRouter, Redirect, RouteComponentProps } from 'react-router'
 import { compose, graphql } from 'react-apollo'
 import { Button, Form, } from 'semantic-ui-react'
 import { createUser, getUser } from '../../graphql'
-import { createUserMutation, getUserQuery } from '../../schema'
+import { createUserMutation, createUserMutationVariables, getUserQuery } from '../../schema'
 
 interface CreateUserProps {
-  createUser: createUserMutation;
   data: {
     loading: boolean,
     user: getUserQuery['user'];
-  };
+  }
+  createUserWithAuthToken({ variables }: { variables: createUserMutationVariables}): Promise<{
+    data: createUserMutation
+  }>
 }
 
 interface State {
@@ -24,15 +26,15 @@ class CreateUser extends React.Component<CreateUserProps & RouteComponentProps<{
 
   handleSubmit = (event) => {
     event.preventDefault()
-    const { createUser, history } = this.props
+    const { createUserWithAuthToken, history } = this.props
     const variables = {
-      idToken: window.localStorage.getItem('auth0IdToken'),
+      idToken: window.localStorage.getItem('auth0IdToken') || '',
       name: this.state.name,
     }
 
-    createUser({ variables })
+    createUserWithAuthToken({ variables })
       .then((response) => {
-          history.replace('/')
+        history.replace('/')
       }).catch((e) => {
         console.error(e)
         history.replace('/')
@@ -70,6 +72,6 @@ class CreateUser extends React.Component<CreateUserProps & RouteComponentProps<{
 }
 
 export default compose(
-  graphql(createUser, {name: 'createUser'}),
-  graphql(getUser, { options: {fetchPolicy: 'network-only'}})
-)(withRouter(CreateUser))
+  graphql(createUser, { name: 'createUserWithAuthToken' }),
+  graphql(getUser, { options: { fetchPolicy: 'network-only' } })
+)(withRouter<{}>(CreateUser))
