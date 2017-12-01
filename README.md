@@ -12,7 +12,7 @@ This app is a tool that helps organizing Lean Coffee sessions.
 ## Technical details
 
 * The backend is hosted on [Graphcool](https://www.graph.cool/)
-* The frontend is a [React](https://facebook.github.io/react/) app, that uses
+* The frontend is a [React](https://facebook.github.io/react/) app, that is written in [Typescript](https://www.typescriptlang.org/docs/home.html) and uses
   * [Apollo](http://dev.apollodata.com/react/) as GraphQL client
   * [Semantic UI](http://react.semantic-ui.com/) as a component framework
 * Authorization is provided by [Auth0](https://auth0.com/)
