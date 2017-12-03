@@ -1,12 +1,36 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
 import { Button, Form, Select } from 'semantic-ui-react'
 import { graphql } from 'react-apollo'
 import { COFFEE_STATE_NAMES } from '../constants'
 import { getLeanCoffee, updateLeanCoffeeState } from '../../../graphql'
+import {
+  LeanCoffeeQueryVariables,
+  LeanCoffeeState,
+  updateLeanCoffeeMutation,
+  updateLeanCoffeeMutationVariables
+} from '../../../schema'
 
-class ChangeStateForm extends Component {
-  constructor(props) {
+interface ChangeStateFormInputProps {
+  id: string
+  state: LeanCoffeeState
+  userId: string
+  hideForm(): void
+}
+
+interface ChangeStateFormMutationProps {
+  submit({ id, state, userId }: { id: string, state: LeanCoffeeState, userId: string }): Promise<{
+    data: updateLeanCoffeeMutation  
+  }>
+}
+
+type ChangeStateFormProps = ChangeStateFormInputProps & ChangeStateFormMutationProps
+
+interface ChangeStateFormState {
+  state: LeanCoffeeState,
+}
+
+class ChangeStateForm extends React.Component<ChangeStateFormProps, ChangeStateFormState> {
+  constructor(props: ChangeStateFormProps) {
     super(props)
 
     this.state = {
@@ -43,28 +67,22 @@ class ChangeStateForm extends Component {
           onChange={(e, { value }) => this.handleSelectChange('state', value)}
           options={stateOptions}
           value={state}
-          required
+          required={true}
         />
 
-        <Button type='submit' positive>Update</Button>
+        <Button type='submit' positive={true}>Update</Button>
         <Button onClick={this.props.hideForm}>Cancel</Button>
       </Form>
     )
   }
 }
 
-ChangeStateForm.propTypes = {
-  hideForm: PropTypes.func.isRequired,
-  id: PropTypes.string.isRequired,
-  state: PropTypes.string.isRequired,
-  submit: PropTypes.func.isRequired,
-  userId: PropTypes.string.isRequired,
-}
-
-export default graphql(updateLeanCoffeeState, {
+export default graphql<{}, ChangeStateFormInputProps>(updateLeanCoffeeState, {
   props: ({ mutate }) => ({
-    submit: ({ id, state, userId }) => mutate(
-      {
+    submit: ({ id, state, userId }: updateLeanCoffeeMutationVariables & LeanCoffeeQueryVariables) => {
+      if (!mutate) { return null }
+      
+      return mutate({
         refetchQueries: [{
           query: getLeanCoffee,
           variables: {
@@ -76,7 +94,7 @@ export default graphql(updateLeanCoffeeState, {
           id,
           state
         }
-      }
-    ),
+      })
+    },
   }),
 })(ChangeStateForm)

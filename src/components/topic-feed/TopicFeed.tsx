@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
+// import PropTypes from 'prop-types'
 import { Card, Feed } from 'semantic-ui-react'
 import { TOPIC_STATE_ICONS } from '../../pages/topic/constants'
 
@@ -29,9 +29,9 @@ const TopicFeed = ({ topics, cardTitle }) => (
   </Card>
 )
 
-TopicFeed.propTypes = {
-  cardTitle: PropTypes.string.isRequired,
-  topics: PropTypes.array.isRequired,
-}
+// TopicFeed.propTypes = {
+//   cardTitle: PropTypes.string.isRequired,
+//   topics: PropTypes.array.isRequired,
+// }
 
 export default TopicFeed

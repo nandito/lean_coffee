@@ -1,7 +1,7 @@
 import { gql } from 'react-apollo'
 
 export const getTopics = gql`
-  query {
+  query getTopics {
     allTopics {
       id
       name

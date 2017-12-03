@@ -1,12 +1,19 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
 import Auth0Lock from 'auth0-lock'
-import { withRouter } from 'react-router-dom'
+import { withRouter, IInjectedProps } from 'react-router-dom'
 import { Button } from 'semantic-ui-react'
 
-class LoginAuth0 extends Component {
+interface LoginAuth0Props {
+  clientId: string;
+  domain: string;
+}
 
-  constructor (props) {
+type Props = IInjectedProps & LoginAuth0Props
+
+class LoginAuth0 extends React.Component<Props, {}> {
+  private _lock: Auth0LockStatic
+
+  constructor(props: Props) {
     super(props)
 
     this._lock = new Auth0Lock(props.clientId, props.domain)
@@ -25,15 +32,9 @@ class LoginAuth0 extends Component {
 
   render() {
     return (
-      <Button primary onClick={this.showLogin}>Log in</Button>
+      <Button primary={true} onClick={this.showLogin}>Log in</Button>
     )
   }
-}
-
-LoginAuth0.propTypes = {
-  clientId: PropTypes.string.isRequired,
-  domain: PropTypes.string.isRequired,
-  history: PropTypes.object.isRequired,
 }
 
 export default withRouter(LoginAuth0)

@@ -1,12 +1,31 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
 import { graphql } from 'react-apollo'
 import { Button, Form, Select, } from 'semantic-ui-react'
 import { TOPIC_STATE_NAMES } from '../constants'
 import { createTopic, getTopicsOfLeanCoffee, getTopics } from '../../../graphql'
+import { createTopicMutation, TopicState } from '../../../schema'
 
-class CreateTopicForm extends Component {
-  constructor(props) {
+interface CreateTopicFormInputProps {
+  leanCoffeeId: string
+  userId: string
+  removeForm(): void
+}
+
+interface CreateTopicFormMutationProps {
+  submit(leanCoffeeId: string, name: string, state: TopicState, userId: string): Promise<{
+    data: createTopicMutation
+  }>
+}
+
+type CreateTopicFormProps = CreateTopicFormInputProps & CreateTopicFormMutationProps
+
+interface CreateTopicFormState {
+  name: string
+  state: TopicState
+}
+
+class CreateTopicForm extends React.Component<CreateTopicFormProps, CreateTopicFormState> {
+  constructor(props: CreateTopicFormProps) {
     super(props)
 
     this.state = {
@@ -22,7 +41,7 @@ class CreateTopicForm extends Component {
 
     submit(leanCoffeeId, name, state, userId)
 
-    removeForm && removeForm()
+    removeForm()
   }
 
   handleInputChange = (event) => {
@@ -45,35 +64,31 @@ class CreateTopicForm extends Component {
           label='Name'
           onChange={this.handleInputChange}
           placeholder='Name'
-          required
+          required={true}
           value={this.state.name}
         />
         <Form.Field
-          disabled
+          disabled={true}
           label='State'
           control={Select}
           onChange={(e, { value }) => this.handleSelectChange('state', value)}
           options={stateOptions}
           placeholder='Select state'
           value={this.state.state}
-          required
+          required={true}
         />
-        <Button type='submit' positive>Submit</Button>
+        <Button type='submit' positive={true}>Submit</Button>
         <Button onClick={removeForm}>Cancel</Button>
       </Form>
     )
   }
 }
 
-CreateTopicForm.propTypes = {
-  removeForm: PropTypes.func,
-  leanCoffeeId: PropTypes.string,
-  submit: PropTypes.func.isRequired
-}
-
-export default graphql(createTopic, {
+export default graphql<{}, CreateTopicFormInputProps>(createTopic, {
   props: ({ mutate }) => ({
     submit: (leanCoffeeId, name, state, userId) => {
+      if (!mutate) { return null }
+      
       if (leanCoffeeId) {
         return mutate({
           refetchQueries: [{
@@ -82,8 +97,7 @@ export default graphql(createTopic, {
           }],
           variables: { leanCoffeeId, name, state, userId }
         })
-      }
-      else {
+      } else {
         return mutate({
           refetchQueries: [
             { query: getTopics },

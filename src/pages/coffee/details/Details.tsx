@@ -1,16 +1,46 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
 import { Button, Header, Icon, Item, Label, List, Message, Segment } from 'semantic-ui-react'
-import { compose, graphql } from 'react-apollo'
-import moment from 'moment'
+import { RouteComponentProps } from 'react-router'
+import { compose, graphql, QueryProps } from 'react-apollo'
+import * as moment from 'moment'
 import ChangeStateForm from './ChangeStateForm'
 import TopicList from './topic-list/TopicList'
 import { COFFEE_STATE_NAMES, COFFEE_STATE_COLORS } from '../constants'
 import { Loading } from '../../../components'
-import { deleteLeanCoffee, getLeanCoffee, getLeanCoffees, leanCoffeeStateSubscription, updateLeanCoffeeState } from '../../../graphql'
+import {
+  deleteLeanCoffee,
+  getLeanCoffee,
+  getLeanCoffees,
+  leanCoffeeStateSubscription,
+  updateLeanCoffeeState
+} from '../../../graphql'
+import {
+  deleteLeanCoffeeMutation,
+  LeanCoffeeState,
+  LeanCoffeeQuery,
+  updateLeanCoffeeMutation
+} from '../../../schema'
 
-class LeanCoffeeDetails extends Component {
-  constructor(props) {
+interface LeanCoffeeDetailsProps {
+  data: QueryProps & LeanCoffeeQuery
+  deleteLeanCoffeeAndRefetchCoffees(id: string): Promise<{
+    data: deleteLeanCoffeeMutation
+  }>
+  updateLeanCoffeeStateAndRefetchCoffee(id: string, state: LeanCoffeeState, userId: string): Promise<{
+    data: updateLeanCoffeeMutation
+  }>
+}
+
+type WrappedProps = LeanCoffeeDetailsProps & RouteComponentProps<{ id: string }>
+
+interface LeanCoffeeDetailsState {
+  changeStateOpen: boolean
+}
+
+class LeanCoffeeDetails extends React.Component<WrappedProps, LeanCoffeeDetailsState> {
+  private createLeanCoffeeSubscription: () => void
+
+  constructor(props: WrappedProps) {
     super(props)
 
     this.state = {
@@ -24,7 +54,7 @@ class LeanCoffeeDetails extends Component {
     this.createLeanCoffeeSubscription = data.subscribeToMore({
       document: leanCoffeeStateSubscription,
       variables: { id },
-      updateQuery: (previousState, {subscriptionData}) => {
+      updateQuery: (previousState: LeanCoffeeQuery, {subscriptionData}) => {
         if (!subscriptionData.data) {
             return previousState
         }
@@ -55,22 +85,25 @@ class LeanCoffeeDetails extends Component {
   }
 
   handleDelete = () => {
-    const { data: { LeanCoffee }, deleteLeanCoffee, history } = this.props
-
-    deleteLeanCoffee(LeanCoffee.id).then(() => {
+    const { data: { LeanCoffee }, deleteLeanCoffeeAndRefetchCoffees, history } = this.props
+    const leanCoffeeId = LeanCoffee && LeanCoffee.id || ''
+    
+    deleteLeanCoffeeAndRefetchCoffees(leanCoffeeId).then(() => {
       history.push('/coffees')
     })
   }
 
   handleStateChange = (nextState) => {
-    const { data:{ LeanCoffee, user }, updateLeanCoffeeState } = this.props
+    const { data: { LeanCoffee, user }, updateLeanCoffeeStateAndRefetchCoffee } = this.props
+    const userId = user && user.id || ''
+    const leanCoffeeId = LeanCoffee && LeanCoffee.id || ''
 
-    updateLeanCoffeeState(LeanCoffee.id, nextState, user.id)
+    updateLeanCoffeeStateAndRefetchCoffee(leanCoffeeId, nextState, userId)
   }
 
   renderControlButtons = (currentState) => (
     <Item.Extra>
-     <Button floated='right' negative onClick={this.handleDelete}>Delete session</Button>
+     <Button floated='right' negative={true} onClick={this.handleDelete}>Delete session</Button>
      { currentState === 'TOPIC_COLLECTION' &&
        <Button
          floated='right'
@@ -97,7 +130,7 @@ class LeanCoffeeDetails extends Component {
 
     if (error) {
       return (
-        <Message negative>
+        <Message negative={true}>
           <Message.Header>Something went wrong</Message.Header>
           <p>Check the console log to see the details.</p>
         </Message>
@@ -107,18 +140,18 @@ class LeanCoffeeDetails extends Component {
     const { changeStateOpen } = this.state
     const coffeeStateName = COFFEE_STATE_NAMES[LeanCoffee.state]
     const coffeeStateColor = COFFEE_STATE_COLORS[LeanCoffee.state]
-    const currentUsersVoteCount = LeanCoffee._votesMeta.count
-    const votesLeft = LeanCoffee.votesPerUser - currentUsersVoteCount
-    const currentUserIsTheHost = user.id === LeanCoffee.user.id
+    const currentUsersVoteCount = LeanCoffee._votesMeta.count
+    const votesLeft = (LeanCoffee.votesPerUser && LeanCoffee.votesPerUser - currentUsersVoteCount) || 0
+    const currentUserIsTheHost = (user && user.id) === (LeanCoffee.user && LeanCoffee.user.id)
 
     return (
       <div>
-        <Header as='h2' icon textAlign='center'>
+        <Header as='h2' icon={true} textAlign='center'>
           <Header.Content>
             Coffee details
           </Header.Content>
           <Header.Subheader>
-            { moment(LeanCoffee.createdAt).format('MMMM Do YYYY') }
+            {moment(LeanCoffee.createdAt).format('MMMM Do YYYY')}
           </Header.Subheader>
         </Header>
 
@@ -127,14 +160,10 @@ class LeanCoffeeDetails extends Component {
             <Item>
               <Item.Content>
                 <Item.Meta>
-                  <List horizontal divided>
+                  <List horizontal={true} divided={true}>
                     <List.Item>
                       { currentUserIsTheHost
-                        ? <Label
-                            as='a'
-                            color={coffeeStateColor}
-                            onClick={this.handleChangeStateOpen}
-                          >
+                        ? <Label as='a' color={coffeeStateColor} onClick={this.handleChangeStateOpen} >
                             <Icon name='edit'/> {coffeeStateName}
                           </Label>
                         : <Label color={coffeeStateColor}>
@@ -156,8 +185,8 @@ class LeanCoffeeDetails extends Component {
                         hideForm={this.handleChangeStateClose}
                         id={LeanCoffee.id}
                         state={LeanCoffee.state}
-                        userId={user.id}
-                      />
+                        userId={user && user.id || ''}
+                    />
                   }
 
                   <Header size='medium'>Topics</Header>
@@ -165,14 +194,14 @@ class LeanCoffeeDetails extends Component {
                   <TopicList
                     coffeeState={LeanCoffee.state}
                     leanCoffeeId={LeanCoffee.id}
-                    leanCoffeeUserId={LeanCoffee.user.id}
+                    leanCoffeeUserId={LeanCoffee.user && LeanCoffee.user.id || ''}
                     loading={loading}
-                    userId={user.id}
+                    userId={user && user.id || ''}
                     votesLeft={votesLeft}
                   />
                 </Item.Description>
 
-                { currentUserIsTheHost && this.renderControlButtons(LeanCoffee.state) }
+                {currentUserIsTheHost && this.renderControlButtons(LeanCoffee.state)}
               </Item.Content>
             </Item>
           </Item.Group>
@@ -182,14 +211,9 @@ class LeanCoffeeDetails extends Component {
   }
 }
 
-LeanCoffeeDetails.propTypes = {
-  data: PropTypes.object.isRequired,
-  deleteLeanCoffee: PropTypes.func.isRequired,
-}
-
 export default compose(
-  graphql(getLeanCoffee, {
-    options: ({ match: { params: { id } }, userId }) => ({
+  graphql<{}>(getLeanCoffee, {
+    options: ({ match: { params: { id } }, userId }: RouteComponentProps<{ id: string }> & { userId: string }) => ({
       fetchPolicy: 'network-only',
       variables: {
         leanCoffeeId: id,
@@ -199,28 +223,36 @@ export default compose(
   }),
   graphql(deleteLeanCoffee, {
     props: ({ mutate }) => ({
-      deleteLeanCoffee: (id) => mutate({
-        refetchQueries: [
-          { query: getLeanCoffees }
-        ],
-        variables: { id }
-      })
+      deleteLeanCoffeeAndRefetchCoffees: (id) => {
+        if (!mutate) { return null }
+        
+        return mutate({
+          refetchQueries: [
+            { query: getLeanCoffees }
+          ],
+          variables: { id }
+        })
+      },
     })
   }),
   graphql(updateLeanCoffeeState, {
     props: ({ mutate }) => ({
-      updateLeanCoffeeState: (id, state, userId) => mutate({
-        refetchQueries: [
-          {
-            query: getLeanCoffee,
-            variables: {
-              leanCoffeeId: id,
-              userId,
-            },
-          }
-        ],
-        variables: { id, state }
-      })
+      updateLeanCoffeeStateAndRefetchCoffee: (id, state, userId) => {
+        if (!mutate) { return null }
+
+        return mutate({
+          refetchQueries: [
+            {
+              query: getLeanCoffee,
+              variables: {
+                leanCoffeeId: id,
+                userId,
+              },
+            }
+          ],
+          variables: { id, state }
+        })
+      }
     })
   })
 )(LeanCoffeeDetails)

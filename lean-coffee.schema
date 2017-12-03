@@ -1,0 +1,77 @@
+﻿type File implements Node {
+  contentType: String!
+  createdAt: DateTime!
+  id: ID! @isUnique
+  name: String!
+  secret: String! @isUnique
+  size: Int!
+  updatedAt: DateTime!
+  url: String! @isUnique
+}
+
+type LeanCoffee implements Node {
+  createdAt: DateTime!
+  host: Participant @relation(name: "LeanCoffeeOnParticipant")
+  id: ID! @isUnique
+  state: LeanCoffeeState!
+  topics: [Topic!]! @relation(name: "LeanCoffeeOnTopic")
+  updatedAt: DateTime!
+  user: User @relation(name: "UserOnLeanCoffee")
+  votes: [Vote!]! @relation(name: "VoteOnLeanCoffee")
+  votesPerUser: Int @defaultValue(value: 5)
+}
+
+enum LeanCoffeeState {
+  TOPIC_COLLECTION
+  TOPIC_VOTING
+  DISCUSSION
+}
+
+type Participant implements Node {
+  createdAt: DateTime!
+  id: ID! @isUnique
+  leanCoffee: LeanCoffee @relation(name: "LeanCoffeeOnParticipant")
+  name: String!
+  topics: [Topic!]! @relation(name: "ParticipantOnTopic")
+  updatedAt: DateTime!
+  votes: [Vote!]! @relation(name: "VoteOnParticipant")
+}
+
+type Topic implements Node {
+  createdAt: DateTime!
+  id: ID! @isUnique
+  leanCoffee: LeanCoffee @relation(name: "LeanCoffeeOnTopic")
+  name: String!
+  participant: Participant @relation(name: "ParticipantOnTopic")
+  state: TopicState!
+  updatedAt: DateTime!
+  user: User @relation(name: "UserOnTopic")
+  votes: [Vote!]! @relation(name: "VoteOnTopic")
+}
+
+enum TopicState {
+  CURRENT
+  OPEN
+  CLOSED
+}
+
+type User implements Node {
+  auth0UserId: String @isUnique
+  createdAt: DateTime!
+  id: ID! @isUnique
+  leanCoffees: [LeanCoffee!]! @relation(name: "UserOnLeanCoffee")
+  name: String!
+  topics: [Topic!]! @relation(name: "UserOnTopic")
+  updatedAt: DateTime!
+  votes: [Vote!]! @relation(name: "UserOnVote")
+}
+
+type Vote implements Node {
+  createdAt: DateTime!
+  id: ID! @isUnique
+  leanCoffee: LeanCoffee @relation(name: "VoteOnLeanCoffee")
+  participant: Participant @relation(name: "VoteOnParticipant")
+  topic: Topic @relation(name: "VoteOnTopic")
+  updatedAt: DateTime!
+  user: User @relation(name: "UserOnVote")
+}

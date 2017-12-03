@@ -1,18 +1,35 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { compose, graphql } from 'react-apollo'
+import * as React from 'react'
+import { compose, graphql, QueryProps } from 'react-apollo'
 import { Button, Card, Divider, Header, List } from 'semantic-ui-react'
 import { TopicFeed } from '../../../../../components'
-import { getLeanCoffee, getTopicsOfLeanCoffee, topicsOfLeanCoffeeSubscription, updateTopicState } from '../../../../../graphql'
+import {
+  getLeanCoffee,
+  getTopicsOfLeanCoffee,
+  topicsOfLeanCoffeeSubscription,
+  updateTopicState
+} from '../../../../../graphql'
+import { topicsOfCoffeeQuery, updateTopicMutation } from '../../../../../schema'
 
-class Discussion extends Component {
+interface DiscussionProps {
+  data: QueryProps & topicsOfCoffeeQuery
+  leanCoffeeId: string
+  leanCoffeeUserId: string
+  userId: string
+  updateTopicStateAndRefetchCoffee(id: string, state: string, leanCoffeId: string, userId: string): Promise<{
+    data: updateTopicMutation
+  }>
+}
+
+class Discussion extends React.Component<DiscussionProps, {}> {
+  private createTopicsSubscription: () => void
+
   componentDidMount() {
     const { data, leanCoffeeId } = this.props
 
     this.createTopicsSubscription = data.subscribeToMore({
       document: topicsOfLeanCoffeeSubscription,
       variables: { id: leanCoffeeId },
-      updateQuery: (previousState, {subscriptionData}) => {
+      updateQuery: (previousState: topicsOfCoffeeQuery, {subscriptionData}) => {
         if (!subscriptionData.data) {
             return previousState
         }
@@ -30,24 +47,24 @@ class Discussion extends Component {
   }
 
   handleStartDiscussion = () => {
-    const { leanCoffeeId, data: { allTopics: topics }, updateTopicState, userId } = this.props
+    const { leanCoffeeId, data: { allTopics: topics }, updateTopicStateAndRefetchCoffee, userId } = this.props
     const upcomingTopics = topics
       .filter(topic => topic.state === 'OPEN')
-      .sort((a,b) => (b._votesMeta.count - a._votesMeta.count))
+      .sort((a, b) => (b._votesMeta.count - a._votesMeta.count))
 
-    updateTopicState(upcomingTopics[0].id, 'CURRENT', leanCoffeeId, userId)
+    updateTopicStateAndRefetchCoffee(upcomingTopics[0].id, 'CURRENT', leanCoffeeId, userId)
   }
 
   handleClose = (id) => {
-    const { leanCoffeeId, updateTopicState, userId } = this.props
+    const { leanCoffeeId, updateTopicStateAndRefetchCoffee, userId } = this.props
 
-    updateTopicState(id, 'CLOSED', leanCoffeeId, userId)
+    updateTopicStateAndRefetchCoffee(id, 'CLOSED', leanCoffeeId, userId)
   }
 
   renderCurrentTopic = (currentTopic) => (
-    <Card centered>
+    <Card centered={true}>
       <Card.Content>
-        <Divider horizontal>Current topic</Divider>
+        <Divider horizontal={true}>Current topic</Divider>
 
         <Card.Description>
           <Header as='h2' content={currentTopic.name} textAlign='center' />
@@ -56,7 +73,7 @@ class Discussion extends Component {
         <Divider />
 
         <Card.Meta textAlign='center'>
-          <List horizontal divided>
+          <List horizontal={true} divided={true}>
             <List.Item>added by {(currentTopic.user && currentTopic.user.name) || 'N/A'}</List.Item>
             <List.Item>has {currentTopic._votesMeta.count} votes</List.Item>
           </List>
@@ -64,9 +81,9 @@ class Discussion extends Component {
       </Card.Content>
 
       { this.props.leanCoffeeUserId === this.props.userId
-        && <Card.Content textAlign='center' extra>
+        && <Card.Content textAlign='center' extra={true}>
              <Button
-               basic
+               basic={true}
                color='blue'
                content='Close topic'
                size='small'
@@ -79,15 +96,14 @@ class Discussion extends Component {
 
   renderControl = () => {
     if (this.props.leanCoffeeUserId === this.props.userId) {
-      return <Button basic color='blue' content='Discuss a topic' onClick={this.handleStartDiscussion} />
-    }
-    else {
+      return <Button basic={true} color='blue' content='Discuss a topic' onClick={this.handleStartDiscussion} />
+    } else {
       return <Card.Header content='Waiting for the host' />
     }
   }
 
   renderTopicPicker = (upcomingTopics) => (
-    <Card centered>
+    <Card centered={true}>
       <Card.Content textAlign='center'>
         { upcomingTopics.length
           ? this.renderControl()
@@ -98,7 +114,7 @@ class Discussion extends Component {
   )
 
   renderNoTopic = () => (
-    <Card centered>
+    <Card centered={true}>
       <Card.Content>
         <Card.Header>
           There are no topics to discuss
@@ -123,14 +139,14 @@ class Discussion extends Component {
 
     return (
       <div>
-        <Card.Group stackable>
+        <Card.Group stackable={true}>
           { currentTopic
             ? this.renderCurrentTopic(currentTopic)
             : this.renderTopicPicker(upcomingTopics)
           }
         </Card.Group>
 
-        <Card.Group itemsPerRow='2' stackable>
+        <Card.Group itemsPerRow='2' stackable={true}>
           <TopicFeed cardTitle='Upcoming' topics={upcomingTopics}/>
           <TopicFeed cardTitle='Closed' topics={closedTopics}/>
         </Card.Group>
@@ -140,38 +156,34 @@ class Discussion extends Component {
   }
 }
 
-Discussion.propTypes = {
-  leanCoffeeId: PropTypes.string.isRequired,
-  leanCoffeeUserId: PropTypes.string.isRequired,
-  loading: PropTypes.bool.isRequired,
-  userId: PropTypes.string.isRequired,
-  updateTopicState: PropTypes.func.isRequired,
-}
-
 export default compose(
   graphql(getTopicsOfLeanCoffee, {
-    options: ({ leanCoffeeId }) => ({
+    options: ({ leanCoffeeId }: { leanCoffeeId: string }) => ({
       fetchPolicy: 'network-only',
       variables: { id: leanCoffeeId },
     })
   }),
   graphql(updateTopicState, {
     props: ({ mutate }) => ({
-      updateTopicState: (id, state, leanCoffeeId, userId) => mutate({
-        refetchQueries: [
-          {
-            query: getLeanCoffee,
-            variables: {
-              leanCoffeeId,
-              userId,
+      updateTopicStateAndRefetchCoffee: (id: string, state: string, leanCoffeeId: string, userId: string) => {
+        if (!mutate) { return null }
+
+        return mutate({
+          refetchQueries: [
+            {
+              query: getLeanCoffee,
+              variables: {
+                leanCoffeeId,
+                userId,
+              }
             }
+          ],
+          variables: {
+            id,
+            state,
           }
-        ],
-        variables: {
-          id,
-          state,
-        }
-      })
+        })
+      }
     })
   }),
 )(Discussion)

@@ -1,12 +1,25 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
 import { Button, Icon, Modal } from 'semantic-ui-react'
-import { compose, graphql } from 'react-apollo'
+import { compose, ChildProps, graphql } from 'react-apollo'
 import { createLeanCoffee, getLeanCoffees, getUser } from '../../../graphql'
+import { getUserQuery } from '../../../schema'
 
-// TODO: split component: get the list of participants only when the modal is opened
-class CreateLeanCoffee extends Component {
-  constructor(props) {
+interface CreateLeanCoffeeProps {
+  data: {
+    loading: boolean;
+    user: getUserQuery['user']
+  };
+  submit: Function
+}
+
+type State = {
+  modalOpen: boolean;
+}
+
+type WrappedProps = ChildProps<CreateLeanCoffeeProps, getUserQuery>
+
+class CreateLeanCoffee extends React.Component<WrappedProps, State> {
+  constructor(props: WrappedProps) {
     super(props)
 
     this.state = {
@@ -25,30 +38,31 @@ class CreateLeanCoffee extends Component {
   handleSubmit = () => {
     const { submit, data: { user } } = this.props
 
-    submit({ userId: user.id })
-    this.setState({
-      modalOpen: false,
-    })
+    if (user && user.id) {
+      submit({ userId: user.id })
+      this.setState({ modalOpen: false })
+    }
   }
 
   render() {
     const { data } = this.props
 
-    if (data.loading) return null
+    if (data.loading) {
+      return null
+    }
 
     return (
       <Modal
         trigger={
-          <Button onClick={this.handleOpen} primary >
+          <Button onClick={this.handleOpen} primary={true} >
             <Icon name='plus' /> Start new session
-          </Button>
-        }
-        closeIcon
+          </Button>}
+        closeIcon={true}
         open={this.state.modalOpen}
         onClose={this.handleClose}
       >
         <Modal.Header>
-          <Icon name='coffee' circular /> Add Lean Coffee
+          <Icon name='coffee' circular={true} /> Add Lean Coffee
         </Modal.Header>
 
         <Modal.Content>
@@ -70,24 +84,23 @@ class CreateLeanCoffee extends Component {
   }
 }
 
-CreateLeanCoffee.propTypes = {
-  data: PropTypes.object.isRequired,
-  submit: PropTypes.func.isRequired,
-}
-
 export default compose(
-  graphql(getUser),
+  graphql<getUserQuery>(getUser),
   graphql(createLeanCoffee, {
     props: ({ mutate }) => ({
-      submit: ({ userId }) => mutate(
-        {
-          refetchQueries: [{ query: getLeanCoffees }],
-          variables: {
-            userId,
-            state: 'TOPIC_COLLECTION'
-          }
+      submit: ({ userId }) => {
+        if (mutate) {
+          mutate(
+            {
+              refetchQueries: [{ query: getLeanCoffees }],
+              variables: {
+                userId,
+                state: 'TOPIC_COLLECTION'
+              }
+            }
+          )
         }
-      ),
+      },
     }),
   })
 )(CreateLeanCoffee)

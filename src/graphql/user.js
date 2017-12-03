@@ -1,7 +1,7 @@
 import { gql } from 'react-apollo'
 
 export const getUser = gql`
-  query userQuery {
+  query getUser {
     user {
       id
       name
@@ -10,7 +10,7 @@ export const getUser = gql`
 `
 
 export const createUser = gql`
-  mutation ($idToken: String!, $name: String!){
+  mutation createUser($idToken: String!, $name: String!){
     createUser(authProvider: {auth0: {idToken: $idToken}}, name: $name) {
       id
     }

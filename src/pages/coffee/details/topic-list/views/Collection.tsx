@@ -1,13 +1,29 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { graphql, compose } from 'react-apollo'
+import * as React from 'react'
+import { graphql, compose, QueryProps } from 'react-apollo'
 import { Button, Icon, Label, List } from 'semantic-ui-react'
 import CreateTopicForm from '../../../../topic/create/CreateForm'
 import { TOPIC_STATE_ICONS, TOPIC_STATE_COLORS } from '../../../../topic/constants'
 import { deleteTopic, getTopicsOfLeanCoffee, topicsOfLeanCoffeeSubscription } from '../../../../../graphql'
+import { topicsOfCoffeeQuery, deleteTopicMutation } from '../../../../../schema'
 
-class Collection extends Component {
-  constructor(props) {
+interface CollectionProps {
+  data: QueryProps & topicsOfCoffeeQuery
+  leanCoffeeId: string
+  leanCoffeeUserId: string
+  userId: string
+  deleteTopicAndRefetchCoffee(leanCoffeeId: string, topicId: string): Promise<{
+    data: deleteTopicMutation
+  }>
+}
+
+interface CollectionState {
+  addTopicOpen: boolean
+}
+
+class Collection extends React.Component<CollectionProps, CollectionState> {
+  private createTopicsSubscription: () => void
+
+  constructor(props: CollectionProps) {
     super(props)
 
     this.state = {
@@ -21,7 +37,7 @@ class Collection extends Component {
     this.createTopicsSubscription = data.subscribeToMore({
       document: topicsOfLeanCoffeeSubscription,
       variables: { id: leanCoffeeId },
-      updateQuery: (previousState, {subscriptionData}) => {
+      updateQuery: (previousState: topicsOfCoffeeQuery, {subscriptionData}) => {
         if (!subscriptionData.data) {
             return previousState
         }
@@ -57,7 +73,7 @@ class Collection extends Component {
   }
 
   handleRemove = (topicId) => {
-    this.props.deleteTopic(this.props.leanCoffeeId, topicId)
+    this.props.deleteTopicAndRefetchCoffee(this.props.leanCoffeeId, topicId)
   }
 
   renderRemoveButton = (topicId) => (
@@ -68,9 +84,9 @@ class Collection extends Component {
         color='red'
         onClick={() => this.handleRemove(topicId)}
         size='mini'
-        >
-          Remove
-        </Label>
+      >
+        Remove
+      </Label>
     </span>
   )
 
@@ -84,7 +100,7 @@ class Collection extends Component {
     return (
       <div>
         <List>
-          { !topics.length && <List.Item>There are no topics specified</List.Item> }
+          {!topics.length && <List.Item>There are no topics specified</List.Item>}
 
           { topics.length !== 0 && topics.map(topic => (
             <List.Item key={topic.id}>
@@ -112,11 +128,7 @@ class Collection extends Component {
 
           {
             this.state.addTopicOpen
-            ? <CreateTopicForm
-                removeForm={this.handleAddTopicClose}
-                leanCoffeeId={leanCoffeeId}
-                userId={userId}
-              />
+            ? <CreateTopicForm removeForm={this.handleAddTopicClose} leanCoffeeId={leanCoffeeId} userId={userId} />
             : <Button size='mini' onClick={this.handleAddTopicOpen}><Icon name='add' /> Add topic</Button>
           }
       </div>
@@ -124,31 +136,28 @@ class Collection extends Component {
   }
 }
 
-Collection.propTypes = {
-  data: PropTypes.object.isRequired,
-  leanCoffeeId: PropTypes.string.isRequired,
-  leanCoffeeUserId: PropTypes.string.isRequired,
-  userId: PropTypes.string.isRequired,
-}
-
 export default compose(
   graphql(getTopicsOfLeanCoffee, {
-    options: ({ leanCoffeeId }) => ({
+    options: ({ leanCoffeeId }: { leanCoffeeId: string }) => ({
       fetchPolicy: 'network-only',
       variables: { id: leanCoffeeId },
     })
   }),
   graphql(deleteTopic, {
     props: ({ mutate }) => ({
-      deleteTopic: (leanCoffeeId, topicId) => mutate({
-        refetchQueries: [
-          {
-            query: getTopicsOfLeanCoffee,
-            variables: { id: leanCoffeeId },
-          }
-        ],
-        variables: { id: topicId }
-      })
+      deleteTopicAndRefetchCoffee: (leanCoffeeId: string, topicId: string) => {
+        if (!mutate) { return null }
+        
+        return mutate({
+          refetchQueries: [
+            {
+              query: getTopicsOfLeanCoffee,
+              variables: { id: leanCoffeeId },
+            }
+          ],
+          variables: { id: topicId }
+        })
+      }
     })
   })
 )(Collection)
