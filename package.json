@@ -5,7 +5,7 @@
   "dependencies": {
     "@types/auth0-lock": "^10.16.1",
     "@types/moment": "^2.13.0",
-    "@types/node": "^8.0.28",
+    "@types/node": "^8.5.7",
     "@types/react": "^16.0.34",
     "@types/react-dom": "^16.0.3",
     "add-graphql-subscriptions": "^1.0.1",
