@@ -21,7 +21,7 @@
     "subscriptions-transport-ws": "^0.8.3"
   },
   "devDependencies": {
-    "@types/async": "^2.0.31",
+    "@types/async": "^2.0.46",
     "react-scripts-ts": "^2.7.0"
   },
   "scripts": {
