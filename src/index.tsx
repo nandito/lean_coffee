@@ -3,12 +3,38 @@ import * as ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 // import registerServiceWorker from './registerServiceWorker'
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
-import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo'
+import { ApolloProvider } from 'react-apollo'
+import { ApolloClient } from 'apollo-client'
+import { ApolloLink } from 'apollo-link'
+import { HttpLink } from 'apollo-link-http'
+import { WebSocketLink } from 'apollo-link-ws'
+import { setContext } from 'apollo-link-context'
+import { InMemoryCache } from 'apollo-cache-inmemory'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
-import { addGraphQLSubscriptions } from 'add-graphql-subscriptions'
 import './index.css'
 import 'semantic-ui-css/semantic.min.css'
+
+const middlewareLink = setContext(() => {
+  const token = localStorage.getItem('auth0IdToken')
+
+  if (!token) {
+    return null
+  }
+
+  return {
+    headers: { 
+      authorization: `Bearer ${token}`,
+    }
+  }
+})
+
+const httpLink = new HttpLink({ uri: 'https://api.graph.cool/simple/v1/cj3okomy5fb9l0198ja30bnhu' })
+
+const hasSubscriptionOperation = ({ query: { definitions } }) => (
+  definitions.some(({ kind, operation }) => (
+    kind === 'OperationDefinition' && operation === 'subscription'
+  ))
+)
 
 const wsClient = new SubscriptionClient('wss://subscriptions.graph.cool/v1/cj3okomy5fb9l0198ja30bnhu', {
   reconnect: true,
@@ -18,51 +44,26 @@ const wsClient = new SubscriptionClient('wss://subscriptions.graph.cool/v1/cj3ok
 },
 })
 
-const networkInterface = createNetworkInterface({
-  uri: 'https://api.graph.cool/simple/v1/cj3okomy5fb9l0198ja30bnhu'
-})
+const wsLink = new WebSocketLink(wsClient)
 
-networkInterface.use([{
-  applyMiddleware(req: any, next: Function) { // tslint:disable-line no-any
-    if (!req.options.headers) {
-      req.options.headers = {}
-    }
-
-    // get the authentication token from local storage if it exists
-    if (localStorage.getItem('auth0IdToken')) {
-      req.options.headers.authorization = `Bearer ${localStorage.getItem('auth0IdToken')}`
-    }
-    next()
-  },
-}])
-
-const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
-  networkInterface,
-  wsClient
+const link = ApolloLink.split(
+  hasSubscriptionOperation,
+  wsLink,
+  middlewareLink.concat(httpLink),
 )
 
 const client = new ApolloClient({
-  networkInterface: networkInterfaceWithSubscriptions,
+  link,
+  cache: new InMemoryCache(),
 })
 
 declare global {
   interface Window { __REDUX_DEVTOOLS_EXTENSION__: Function; }
 }
 
-const store = createStore(
-  combineReducers({
-    apollo: client.reducer(),
-  }),
-  {},
-  compose(
-    applyMiddleware(client.middleware()),
-    (typeof window.__REDUX_DEVTOOLS_EXTENSION__ !== 'undefined') ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f,
-  )
-)
-
 ReactDOM.render(
   <BrowserRouter basename={process.env.PUBLIC_URL}>
-    <ApolloProvider client={client} store={store}>
+    <ApolloProvider client={client}>
       <App />
     </ApolloProvider>
   </BrowserRouter>,

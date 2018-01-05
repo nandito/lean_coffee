@@ -1,4 +1,4 @@
-import { gql } from 'react-apollo'
+import gql from 'graphql-tag'
 
 export const createVote = gql`
   mutation createVote($leanCoffeeId: ID!, $userId: ID!, $topicId: ID!) {
