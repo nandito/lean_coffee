@@ -2,7 +2,6 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
-// import registerServiceWorker from './registerServiceWorker'
 import { ApolloProvider } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
 import { ApolloLink } from 'apollo-link'
@@ -57,10 +56,6 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-declare global {
-  interface Window { __REDUX_DEVTOOLS_EXTENSION__: Function; }
-}
-
 ReactDOM.render(
   <BrowserRouter basename={process.env.PUBLIC_URL}>
     <ApolloProvider client={client}>
@@ -69,5 +64,3 @@ ReactDOM.render(
   </BrowserRouter>,
   document.getElementById('root')
 )
-
-// registerServiceWorker()
