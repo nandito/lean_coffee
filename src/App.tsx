@@ -71,7 +71,7 @@ interface PrivateRouteProps {
   isAuthenticated: boolean;
   exact?: boolean;
   path: string;
-  component: new() => React.Component<{}, {}>;
+  component: React.ComponentClass<{}>;
   userId?: string | boolean;
 }
 

@@ -1,4 +1,4 @@
-import { SemanticCOLORS } from 'semantic-ui-react'
+import { SemanticCOLORS, SemanticICONS } from 'semantic-ui-react'
 
 export const TOPIC_STATE_NAMES = {
   OPEN: 'Open',
@@ -6,7 +6,11 @@ export const TOPIC_STATE_NAMES = {
   CLOSED: 'Closed',
 }
 
-export const TOPIC_STATE_ICONS = {
+export const TOPIC_STATE_ICONS: {
+  OPEN: SemanticICONS,
+  CURRENT: SemanticICONS,
+  CLOSED: SemanticICONS,
+} = {
   OPEN: 'square outline',
   CURRENT: 'pointing right',
   CLOSED: 'checkmark box',
