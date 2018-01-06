@@ -1,5 +1,7 @@
 # Lean Coffee
 
+[![Build Status](https://travis-ci.org/nandito/lean_coffee.svg?branch=master)](https://travis-ci.org/nandito/lean_coffee)
+
 _This is a pet project only, not a production ready app, use it on your own risk._
 
 ## Summary
@@ -17,6 +19,7 @@ This app is a tool that helps organizing Lean Coffee sessions.
   * [Semantic UI](http://react.semantic-ui.com/) as a component framework
 * Authorization is provided by [Auth0](https://auth0.com/)
 * The demo app is hosted on [Surge](http://surge.sh/)
+* The continuous integration runs on [Travis CI](https://travis-ci.org/)
 
 ### Run the app on localhost
 
