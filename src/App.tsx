@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { Container } from 'semantic-ui-react'
 import { ChildProps, graphql } from 'react-apollo'
-import { CreateUser, Home, LeanCoffeeDetails, ListLeanCoffees, ListParticipants, ListTopics } from './pages'
+import { CreateUser, Home, NotFound, LeanCoffeeDetails, ListLeanCoffees, ListParticipants, ListTopics } from './pages'
 import { Loading, Navbar } from './components'
 import { getUser } from './graphql'
 import { getUserQuery } from './schema'
@@ -61,6 +61,7 @@ class App extends React.Component<ChildProps<AppProps, getUserQuery>, {}> {
             isAuthenticated={isAuthenticated}
             path='/topics'
           />
+          <Route component={NotFound} />
         </Switch>
       </Container>
     )
