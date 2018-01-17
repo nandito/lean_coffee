@@ -1,7 +1,16 @@
 {
   "name": "lean_coffee",
   "version": "0.2.0",
+  "license": "MIT",
   "private": true,
+  "author": {
+    "name": "Nandor Biro",
+    "url": "https://nandito.info/"
+  },
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/nandito/lean_coffee"
+  },
   "dependencies": {
     "@types/auth0-lock": "^10.16.2",
     "@types/moment": "^2.13.0",
