@@ -1,6 +1,7 @@
 {
   "name": "lean_coffee",
   "version": "0.2.0",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@types/auth0-lock": "^10.16.2",
